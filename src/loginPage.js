@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import {Label, Input} from 'reactstrap';
+import {Label, Input, Spinner, Button, Modal, ButtonToolbar} from 'reactstrap';
 import Header from './components/header';
 import Button_cls from './components/button';
-import './login_page.css';
+import './loginPage.css';
 
 
 import IPADDRESS from './components/server_ip';
@@ -22,20 +22,23 @@ class login  extends Component {
         super(props);
         this.state = {userMail:'',
                         password:'',
-                        
-                     }
+                        isLoading:false,
+                        }
     }
 
+    
+    // Set value of the state variables
     setFormValues=(event)=>{
         this.setState({[event.target.name]:event.target.value});
-        console.log("formValuesChanging");  
+        //console.log("formValuesChanging");  
     }
 
-
+    // Send login credential data to the server and displays the result/ redirect to new page 
     handleLoginCredential=async(event)=>{
         event.preventDefault();
         
-        //console.log(this.state);
+        await this.setState({isLoading:true});
+        console.log(this.state);
   
         fetch(IPADDRESS+'/login',{ 
             
@@ -48,42 +51,30 @@ class login  extends Component {
         })
         .then(response => response.json())
         .then(resultData =>{
-            console.log(resultData['token']);
+            this.setState({isLoading:false});
+        
+            //console.log(resultData['token']);
             
+            
+            //Displays the failed status 
             if(resultData['status']==='failed'){
-
-            document.getElementById("loginStatusInfo").innerHTML="";
-           
-            var addParagraph = document.createElement("P");
-            addParagraph.innerHTML = resultData['description'];
-            addParagraph.style.fontSize="12px";
-            addParagraph.style.color="red";
-            addParagraph.style.fontWeight=600;
-            addParagraph.style.textAlign="center";
-            document.getElementById("loginStatusInfo").appendChild(addParagraph);
-            }
+                let displayStatusDescription=document.getElementById("loginStatusInfo");
+                displayStatusDescription.innerHTML='';
+                displayStatusDescription.innerHTML = resultData['description'];
+                displayStatusDescription.style.color="red";
+            }// Displays success status
             else{
+             let displayStatusDescription=document.getElementById("loginStatusInfo");
+                displayStatusDescription.innerHTML="";
+                displayStatusDescription.innerHTML = resultData['description'];
+                displayStatusDescription.style.color="lightgreen";
 
-                
-            
-            document.getElementById("loginStatusInfo").innerHTML="";
-           
-            var addParagraph = document.createElement("P");
-            addParagraph.innerHTML = resultData['description'];
-            addParagraph.style.fontSize="12px";
-            addParagraph.style.color="lightgreen";
-            addParagraph.style.fontWeight=600;
-            addParagraph.style.textAlign="center";
-            document.getElementById("loginStatusInfo").appendChild(addParagraph);
-
-            
+            // prevent direct accessing the Url without login
             if(resultData['token']){
                 console.log(resultData);
                 this.props.history.push({pathname:'/home',test:{token: resultData['token'] }});
                 }
             else{
-                //this.props.history.push("/");
-
                 console.log("Please Login");
                 }
             }
@@ -91,17 +82,57 @@ class login  extends Component {
             })
 
         .catch(error =>{
-            console.log(error)
+            this.setState({isLoading:false});
+         
+            console.log(error);
         })
     }
 
     componentDidMount(){
-        console.log(this.props);
-        }
+        console.log(this.state.isLoading);
+        {(!this.state.isLoading)?(console.log('Loading')):(console.log("error"))}
+
+    }
 
 
-    render() { 
+    // MyVerticallyCenteredModal(props) {
+    //     return (
+    //       <Modal
+    //         {...props}
+    //         size="lg"
+    //         aria-labelledby="contained-modal-title-vcenter"
+    //         centered
+    //       >
+    //         <Modal.Header closeButton>
+    //           <Modal.Title id="contained-modal-title-vcenter">
+    //             Modal heading
+    //           </Modal.Title>
+    //         </Modal.Header>
+    //         <Modal.Body>
+    //           <h4>Centered Modal</h4>
+    //           <p>
+    //             Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
+    //             dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
+    //             consectetur ac, vestibulum at eros.
+    //           </p>
+    //         </Modal.Body>
+    //         <Modal.Footer>
+    //           <Button onClick={props.onHide}>Close</Button>
+    //         </Modal.Footer>
+    //       </Modal>
+    //     );
+    //   }
+      
+
+
+    render()
+    
+    {
+        
+        
+
         return ( <div className="login_container col-lg-4">
+                
                     <Header/>
 
                     <br/>
@@ -110,12 +141,9 @@ class login  extends Component {
                         <div className='login_title'>
                             Login in to your account
                         </div>
-
+                        
                         {("test" in this.props.location)?(<p>{this.props.location.test.info}</p>):(<p></p>)}
     
-                            
-        
-
                         <div id="loginStatusInfo"></div>
                         <div className="form_value">
                             <form onSubmit={this.handleLoginCredential}>
@@ -131,15 +159,24 @@ class login  extends Component {
                                     <Link to ='/newUser'><h6>New User? Register</h6></Link>
                                 </div> 
                                 <br/>
-                                
-                                <Button_cls name='Login'/>
+
+                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Loading...{this.state.isLoading}</button>):(<Button_cls name='Login'></Button_cls>)}
+   
                             </form>
-                        
-                        </div>
+
+                                                    
+                            </div>
                     </div>
-                </div> 
+
+
+
+
+                    
+                    </div> 
                 );
             }
         }
+
+
         
 export default login ;
