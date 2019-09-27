@@ -5,21 +5,21 @@ import {Route} from 'react-router-dom';
 
 //import Youtube from './Youtube';
 
-import Login_Card from './login_page';
+import LoginPage from './loginPage';
 
-import Forgot_Password from './pages/forgot_password';
+import ForgotPassword from './pages/forgotPassword';
 
-import NewUser from './pages/newuser';
-import Homepage from './pages/Homepage';
+import NewUser from './pages/newUserRegistration';
+import HomePage from './pages/homePage';
 
 function App() {
   return (
     <div className="App col-lg-12">
 
-      <Route path='/' exact component={Login_Card}/>
-      <Route path='/forgot' exact component={Forgot_Password} />
+      <Route path='/' exact component={LoginPage}/>
+      <Route path='/forgot' exact component={ForgotPassword} />
       <Route path='/newUser' exact component={NewUser} />
-      <Route path='/home' exact component={Homepage}/>
+      <Route path='/home' exact component={HomePage}/>
       
       
 
