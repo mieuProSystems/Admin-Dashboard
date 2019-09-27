@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import Login_Card from '../login_page';
-
 class homepage  extends Component {
     
     componentDidMount(){
@@ -10,9 +8,7 @@ class homepage  extends Component {
     }
 
     redirectToLogin =()=>{
-
         this.props.history.push({pathname:'/', test:{info:'Please Login...!'}});
-
     }
 
     render() { 
