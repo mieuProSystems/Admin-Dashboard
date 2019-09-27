@@ -1,30 +1,32 @@
 import React, { Component } from 'react';
 
-import '../login_page.css';
+import '../loginPage.css';
+import '../CSS/forgotPassword.css';
 
-import {Input} from 'reactstrap';
+import {Input, Spinner} from 'reactstrap';
 import Header from '../components/header';
 import Button_Cls from '../components/button';
 import IPADDRESS from '../components/server_ip';
 
-class forget_password  extends Component {
+class forgetPassword  extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {userMail:''
-                     }
+        this.state = {userMail:'',
+                        isLoading:false
+                    }
     }
-
+    //Set value of the state variable
     handleChange=(event)=>{
         this.setState({[event.target.name]:event.target.value});
-        console.log("userMailEntered");
-        console.log(IPADDRESS);
-        
+        //console.log("userMailEntered");
+        //console.log(IPADDRESS);   
     }
 
-
-    handleLoginCredential=(e)=>{
+    // Send request to the server and displays the response
+    handleCredential=async(e)=>{
         e.preventDefault();
+        await this.setState({isLoading:true});
         
         fetch(IPADDRESS+'/forgot',{ 
             
@@ -37,37 +39,27 @@ class forget_password  extends Component {
         })
         .then(response => response.json())
         .then(resultData =>{console.log(resultData['status']);
-        
+            this.setState({isLoading:false});
+
             if(resultData['status']==='failed'){
 
-                document.getElementById("forgotErrorInfo").innerHTML="";
-                console.log(resultData);
-                var addParagraph = document.createElement("P");
-                addParagraph.innerHTML = resultData['description'];
-                addParagraph.style.fontSize="12px";
-                addParagraph.style.color="red";
-                addParagraph.style.fontWeight=600;
-                addParagraph.style.textAlign="center";
-                document.getElementById("forgotErrorInfo").appendChild(addParagraph);
+                let displayStatusDescription=document.getElementById("forgotErrorInfo");
+                displayStatusDescription.innerHTML="";
+                displayStatusDescription.innerHTML = resultData['description'];
+                displayStatusDescription.style.color="red";
+            }
+            else{
+                let displayStatusDescription=document.getElementById("forgotErrorInfo");
+                displayStatusDescription.innerHTML="";
+                displayStatusDescription.innerHTML = resultData['description'];
+                displayStatusDescription.style.color="lightgreen";
                 }
-                else{
-                    document.getElementById("forgotErrorInfo").innerHTML="";
-               
-                var addParagraph = document.createElement("P");
-                addParagraph.innerHTML = resultData['description'];
-                addParagraph.style.fontSize="12px";
-                addParagraph.style.color="lightgreen";
-                addParagraph.style.fontWeight=600;
-                addParagraph.style.textAlign="center";
-                document.getElementById("forgotErrorInfo").appendChild(addParagraph);
-                }
-        
-        
         
         })
-
         .catch(error =>{
-            console.log(error)
+            console.log(error);
+            this.setState({isLoading:false});
+
         })
 
     }
@@ -81,11 +73,11 @@ class forget_password  extends Component {
                         </div>
                         <div id="forgotErrorInfo"></div>
                         <div className="form_value">
-                            <form onSubmit={this.handleLoginCredential}>
+                            <form onSubmit={this.handleCredential}>
                                 <label>Enter Your Registered mail:</label>
                                 <Input type="email" name='userMail' value={this.state.user_mail} placeholder="user@example.com" onChange={this.handleChange} required/><br/><br/>
                              
-                                <Button_Cls name='Request to Change Password'/>
+                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Request to change password</button>):(<Button_Cls name='Request to Change Password'/>)}
                             </form>
                         </div>
                     </div>
@@ -93,4 +85,4 @@ class forget_password  extends Component {
                 );
             }
         }
-export default forget_password ;
+export default forgetPassword ;
