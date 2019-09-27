@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {Label, Input} from 'reactstrap';
+import {Label, Input, Spinner} from 'reactstrap';
 import Header from '../components/header';
-import Button_cls from '../components/button';
+import Button_Cls from '../components/button';
 
 /*import {
     FacebookLoginButton,
@@ -9,13 +9,11 @@ import Button_cls from '../components/button';
     TwitterLoginButton,
   } from "react-social-login-buttons";*/
 
-import '../login_page.css';
+import '../loginPage.css';
+import '../CSS/newUserRegistration.css';
+import Modal from '../components/showModal'
 
 import IPADDRESS from '../components/server_ip';
-
-
-
-
 
 
 class newUser  extends Component {
@@ -29,43 +27,42 @@ class newUser  extends Component {
                         mobileNo:'',
                         password:'',
                         confirmPassword:'',
-                        isPasswordMatched:'false'
+                        isPasswordMatched:'false',
+                        isLoading:false,
+                        showModal:false
                      }
     }
 
+    //Set value of the state variables && also compare the password with ConfirmPassword to display the error message
     setFormValues=async(event)=>{
         let getEventTargetName=event.target.name;
-        
+
         await(this.setState({[event.target.name]:event.target.value}));
+
         if (getEventTargetName === 'password'){
         
             const {password, confirmPassword} = this.state;
-
             function isPasswordMatch1(){
             if (password === confirmPassword){
                 return true;
             }
             return false;
         }
-        console.log(password,confirmPassword);
+        //console.log(password,confirmPassword);
         await(this.setState({isPasswordMatched:await(isPasswordMatch1())}));
         this.displayConfirmPasswordState();
-    
-
-
-
         }
-        console.log("formValuesChanged");   
+        //console.log("formValuesChanged");   
     }
 
 
-
+    // Comparing password with ConfirmPassword
     comparePassword = async(event)=>{
         let getEventTargetName=event.target.name;
         
         console.log("comparePassword");
         if(getEventTargetName === 'confirmPassword'){
-        await(this.setState({[event.target.name]:event.target.value}));
+            await(this.setState({[event.target.name]:event.target.value}));
         }
 
         const {password, confirmPassword} = this.state;
@@ -76,94 +73,88 @@ class newUser  extends Component {
             }
             return false;
         }
-        console.log(password,confirmPassword);
+
+        //console.log(password,confirmPassword);
         await(this.setState({isPasswordMatched:await(isPasswordMatch2())}));
         this.displayConfirmPasswordState();
     }
 
 
 
-    handleLoginCredential=async(event)=>{
+    //Displays Password Status Message
+    displayConfirmPasswordState=()=>{
+        if(this.state.isPasswordMatched){
+            let displayPasswordStatus=document.getElementById("passwordErrorInfo");
+            displayPasswordStatus.innerHTML = "Password Matched";
+            displayPasswordStatus.style.color="lightgreen";
+            }
+        else{
+            let displayPasswordStatus=document.getElementById("passwordErrorInfo");
+            displayPasswordStatus.innerHTML = "Password Mismatched";
+            displayPasswordStatus.style.color="red";
+            }
+        }
+
+
+
+    // Send form values to the server and displays the status
+    handleRegisterCredential=async(event)=>{
         event.preventDefault();
-        const{isPasswordMatched}=this.state;
+        await this.setState({isLoading:true});
+        await this.setState({showModal: true});
         
-        console.log('In submit, Is PasswordMatched = '+isPasswordMatched);
+        const{isPasswordMatched}=this.state;
+        console.log(this.state);
+        
+        //console.log('In submit, Is PasswordMatched = '+isPasswordMatched);
+
         if(isPasswordMatched){
             await(this.setState({isPasswordMatched:'false'}));
             document.getElementById('registerErrorInfo').innerHTML="";
 
 
-        fetch(IPADDRESS+'/register',{ 
-            
-            method: 'POST',
-            headers: {
-                
-                'Content-Type': 'application/json',    
-            },
-            body:JSON.stringify(this.state) 
-        })
-        .then(response => response.json())
-        .then(resultData =>{console.log(resultData);
-            if(resultData['status']==='failed'){
-                document.getElementById("registerErrorInfo").innerHTML="";
-               
-                var addParagraph = document.createElement("P");
-                addParagraph.innerHTML = resultData['description'];
-                addParagraph.style.fontSize="12px";
-                addParagraph.style.color="red";
-                addParagraph.style.fontWeight=600;
-                addParagraph.style.textAlign="center";
-                document.getElementById("registerErrorInfo").appendChild(addParagraph);
-                }
-            else{
-                document.getElementById("registerErrorInfo").innerHTML="";
-               
-                var addParagraph = document.createElement("P");
-                addParagraph.innerHTML = resultData['description'];
-                addParagraph.style.fontSize="12px";
-                addParagraph.style.color="lightgreen";
-                addParagraph.style.fontWeight=600;
-                addParagraph.style.textAlign="center";
-                document.getElementById("registerErrorInfo").appendChild(addParagraph);     
-                }
-    
+            fetch(IPADDRESS+'/register',{ 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',    
+                    },
+                body:JSON.stringify(this.state) 
+            })
+            .then(response => response.json())
+            .then(resultData =>{
+                this.setState({isLoading:false})
         
-        })
-
-        .catch(error =>{
-            console.log(error)
-        })
+                console.log(resultData);
+                if(resultData['status']==='failed'){
+                    let displayRegisterStatus=document.getElementById("registerErrorInfo");
+                    displayRegisterStatus.innerHTML = resultData['description'];
+                    alert(resultData['description']);
+                    displayRegisterStatus.style.color="red";
+                }
+                else{
+                    let displayRegisterStatus=document.getElementById("registerErrorInfo");
+                    displayRegisterStatus.innerHTML = resultData['description'];
+                    alert(resultData['description']);
+                    displayRegisterStatus.style.color="lightgreen";
+                }
+            })
+            .catch(error =>{
+                console.log(error);
+                this.setState({isLoading:false});
         
-    }
-    else{
-
-    }
-    
-    }
-
-    displayConfirmPasswordState=()=>{
-        if(this.state.isPasswordMatched){
-            document.getElementById("passwordErrorInfo").innerHTML="";
-           
-            var addParagraph = document.createElement("P");
-            addParagraph.innerHTML = "Password Matched";
-            addParagraph.style.fontSize="12px";
-            addParagraph.style.color="lightgreen";
-            addParagraph.style.fontWeight=600;
-            document.getElementById("passwordErrorInfo").appendChild(addParagraph);
-            }
+            })
+        
+        }
         else{
-            document.getElementById("passwordErrorInfo").innerHTML="";
-           
-            var addParagraph = document.createElement("P");
-            addParagraph.innerHTML = "Password Mismatched";
-            addParagraph.style.fontSize="12px";
-            addParagraph.style.color="red";
-            addParagraph.style.fontWeight=600;
-            document.getElementById("passwordErrorInfo").appendChild(addParagraph);     
-            }
+            document.getElementById("registerErrorInfo").innerHTML="Passwords Mismatched";
+        }
+    
     }
 
+    
+        
+    
+    
     render() { 
         return ( <div className="login_container col-lg-4">
                     <Header/>
@@ -174,13 +165,13 @@ class newUser  extends Component {
                         </div>
                         <div id='registerErrorInfo'></div>
                         <div className="form_value">
-                            <form onSubmit={this.handleLoginCredential}>
+                            <form onSubmit={this.handleRegisterCredential}>
 
                                 <Label>First Name </Label>
-                                <Input type="text" name='firstName' value={this.state.firstName} placeholder="John" onChange={this.setFormValues} required/>
+                                <Input type="text" name='firstName' value={this.state.firstName} placeholder="Steve" onChange={this.setFormValues} required/>
                                 
                                 <Label>Last Name </Label>
-                                <Input type="text" name='lastName' value={this.state.lastName} placeholder="Wick" onChange={this.setFormValues} required/>
+                                <Input type="text" name='lastName' value={this.state.lastName} placeholder="Smith" onChange={this.setFormValues} required/>
                                 
                                 <Label>Gender</Label>
                                 <Input type="text" name='gender' value={this.state.gender} placeholder="Male/Female/Other" onChange={this.setFormValues} required/>
@@ -201,12 +192,14 @@ class newUser  extends Component {
                                 <div id = 'passwordErrorInfo'> </div>
                                 <br/>
 
+                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Register</button>):(<Button_Cls name='Register'/>)}
                                 
-                                
-                                <Button_cls name='Register'/>
+                    
                             </form>
                         </div>
                     </div>
+
+                    
                 </div> 
                 );
     }
