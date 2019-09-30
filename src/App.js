@@ -14,7 +14,7 @@ import HomePage from './pages/homePage';
 
 function App() {
   return (
-    <div className="App col-lg-12">
+    <div className="App container-fluid">
 
       <Route path='/' exact component={LoginPage}/>
       <Route path='/forgot' exact component={ForgotPassword} />
