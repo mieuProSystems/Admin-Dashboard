@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import '../CSS/homepage.css';
+
 class homepage  extends Component {
     
     //componentDidMount(){
@@ -10,14 +12,19 @@ class homepage  extends Component {
     
     constructor(props) {
         super(props);
-        this.state={curTime:'null'}}
+        this.state={curTime:'',
+                    curDate:'',
+                    query:''}}
     
 
     componentWillMount(){
-
+        
+        //console.log(this.props.loaction);
         setInterval(function(){
             this.setState({
-                curTime: new Date().toLocaleString("en-US", {timeZone: "Asia/kolkata"})
+                curTime: new Date().toLocaleTimeString("en-US", {timeZone: "Asia/kolkata"}),
+                curDate: new Date().toLocaleDateString("en-US", {timeZone: "Asia/kolkata"})
+            
             })
         }.bind(this), 1000);
     }
@@ -26,36 +33,117 @@ class homepage  extends Component {
         this.props.history.push({pathname:'/', test:{info:'Please Login...!'}});
     }
 
+
+    handleQueryValueChange=(event)=>{
+
+        this.setState({[event.target.name]:event.target.value});
+
+    }
+
+    getYoutube=(e)=> {
+        e.preventDefault();
+
+        //console.log(this.state.query);
+        const API_key ='AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ';
+        const typeOfData='channel';
+        const query=this.state.query;
+        const maxResults = 50;
+
+        const fetchUrl='https://www.googleapis.com/youtube/v3/search?part=snippet&type='+typeOfData+'&q='+ query +'&key='+API_key+'&maxResults='+maxResults;
+
+
+        return fetch(fetchUrl)
+          .then((response) => response.json())
+          .then((resultData) => {
+            //document.getElementById('searchResults').style.visibility='visible';
+
+              document.getElementById('searchResults').innerHTML='';
+            
+            var i;
+            for(i in resultData['items']){
+                let divElementForImages = document.createElement('div');
+                divElementForImages.setAttribute('id','images'+i);
+                divElementForImages.setAttribute('class','resultImages');
+                divElementForImages.innerHTML=resultData['items'][i]['snippet']['channelTitle'];
+
+                let thumbnailImage = document.createElement('img');
+                thumbnailImage.setAttribute('src',resultData['items'][i]['snippet']['thumbnails']['default']['url']);
+                
+                divElementForImages.append(thumbnailImage);
+
+                document.getElementById('searchResults').appendChild(divElementForImages);
+
+                console.log(resultData['items'][i]['snippet']['channelTitle']);
+                console.log(resultData['items'][i]['snippet']['thumbnails']['default']);
+            
+            //console.log(resultData['items'][i]['snippet']['channelTitle']);
+            }
+
+            console.log(resultData);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    
+     // componentDidMount(){
+       // document.getElementById('searchResults').style.visibility='hidden';
+
+      //}
+
    // "test" in this.props.location?(
      //   <div>Welcome to VSMA..!</div>):(<div>{this.redirectToLogin()}</div>)
 
     render() { 
         return ( 
 
-            <div className='container-fluid' style={{color:'white', display:'inline', zIndex:1}}>
-                <div style={{border:'2px', borderStyle:'solid', borderColor:'black', height:'100%'}}> 
-                    Welcome to VSMA...!
-                </div>
+            <div className='container-fluid' style={{ display:'inline-flex', height:'100vh'}}>
+                <div className= 'col-lg-2' style={{backgroundColor:'#eee'}}> 
 
-                <div className='container-fluid' style={{width:'100%'}}>
-                    <div className='row'>
-                <div className='searchPanel col-lg-3' style={{border:'2px', borderStyle:'solid', borderColor:'black', height:'100%', marginTop:'0px',backgroundColor:'white'}}>
-                    hai
-                </div>
-                <div className='searchPanel col-lg-6' style={{border:'2px', borderStyle:'solid', borderColor:'black', height:'100%', marginTop:'0px',backgroundColor:'white'}}>
-                    hai
-                </div>
-                <div className='searchPanel col-lg-3' style={{border:'2px', borderStyle:'solid', borderColor:'black', height:'100px',color:'black', marginTop:'0px',backgroundColor:'white'}}>
-                    {this.state.curTime}
 
+                    <div className='adminInfo'>
+                        <h3>Admin Info</h3>
+                    {/*    <span>Name:{this.props.location}</span>*/}
                     
-                
-          
-          
-                </div>
-                </div>
+                    </div>
+                    <div className='vertical-menu' style={{fontWeight:600, textAlign:'center'}}>
+                    
+                    <a>Home</a>
+                    <a>Account Information</a>
+                    <a>Manage Users</a>
+                    <a>Manage Videos</a>
+                    <a>Log History</a>
+                    <a>Log out</a>
+                    </div>
+
+
+                    <div style={{color:'block'}}>
+                    <span>Date:{this.state.curDate} (MM/DD/YYYY)</span><br/>
+                    <span>Time:{this.state.curTime} </span>
+                    </div>
 
                 </div>
+
+                
+                <div className='videoPanel col-lg-7' style={{border:'2px', borderStyle:'solid', borderColor:'black', marginTop:'0px',backgroundColor:'#eee'}}>
+                Welcome to VSMA...!
+                </div>
+                <div className='searchPanel col-lg-3' style={{ border:'2px', borderStyle:'solid', borderColor:'black', marginTop:'0px',backgroundColor:'#eee'}}>
+                    <form className='searchForm' onSubmit={this.getYoutube}>
+                    <h3>What are you looking for...?</h3>
+                    <input type='text' name='query' placeholder='Enter Channel Name' onChange={this.handleQueryValueChange} value={this.state.query} required/>
+                    <button type='submit' className='btn-primary' >Search</button>
+                    </form>
+
+                    <div id="searchResults">
+
+
+                </div>
+            
+                </div>
+                
+
+        
             
             
             </div>
