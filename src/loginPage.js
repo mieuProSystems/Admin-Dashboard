@@ -72,7 +72,7 @@ class login  extends Component {
             // prevent direct accessing the Url without login
             if(resultData['token']){
                 console.log(resultData);
-                this.props.history.push({pathname:'/home',test:{token: resultData['token'] }});
+                //this.props.history.push('/home',{response:resultData});
                 }
             else{
                 console.log("Please Login");
