@@ -15,6 +15,8 @@ const fetchUrl='https://www.googleapis.com/youtube/v3/search?part=snippet&type='
 console.log(fetchUrl);
 //'https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ'
 // https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=sony&key=AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ
+// https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCNvR1Zh8DoH4HcrVere2RzQ&maxResults=50&type=video&key=[YOUR_API_KEY] HTTP/1.1
+
 class youtube extends Component {
     constructor(props) {
         super(props);

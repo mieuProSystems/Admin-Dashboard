@@ -10,7 +10,7 @@ import LoginPage from './loginPage';
 import ForgotPassword from './pages/forgotPassword';
 
 import NewUser from './pages/newUserRegistration';
-import HomePage from './pages/homePage';
+import HomePage from './pages/Homepage';
 
 function App() {
   return (
