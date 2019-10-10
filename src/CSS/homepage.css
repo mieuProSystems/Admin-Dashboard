@@ -1,25 +1,28 @@
 .vertical-menu {
     width: 100%; /* Set a width if you like */
-  }
-  
-  .vertical-menu a {
-    background-color: #eee; /* Grey background color */
-    color: black; /* Black text color */
-    display: block; /* Make the links appear below each other */
-    padding: 10px; /* Add some padding */
-    text-decoration: none; /* Remove underline from links */
-  }
-  
-  .vertical-menu a:hover {
-    background-color: #2c3e50; /* Dark grey background on mouse-over */
-    color:white;
-  }
-  
-  .vertical-menu a.active {
-    background-color:#2c3e50; /* Add a green color to the "active/current" link */
     color: white;
+    display: inline-block; /* Make the links appear below each other */
+    padding: 10px 5px; /* Add some padding */
+    text-align: left;
+    text-decoration: none; /* Remove underline from links */
+    font-weight:600;  
+    justify-content: flex;
   }
+  .menu{
+    margin: 10px 5px;
+    font-size: 20px;
+  }
+  .menu:hover {
+    background-color:#eee; /* Dark grey background on mouse-over */
+    color:#2c3e50;
+    }
 
+  .dateAndTime{
+    color: white;
+    font-size: 14px;
+    bottom: 0;
+    position:absolute;
+  }
 
   input[type=email] {
     background-color:whitesmoke;
@@ -49,11 +52,56 @@
     cursor: pointer;
 }
 
-
 #searchResults{
     overflow-y:scroll ;
     height: 80%;
     width: 100%;
     /*border: #2c3e50 2px solid;*/
     
+}
+
+.channelDiv{
+  float: left;
+  overflow-x: scroll; 
+  overflow-y: hidden;
+  width: 100%;
+  
+  /*border: 2px solid #2c3e50;*/
+  background-color: white;
+  margin: 20px 10px;  
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2); 
+    
+  
+}
+
+.videosofthechannel{
+  justify-content: space-between;
+  margin: 10px 20px;
+  
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.5); 
+  
+    
+}
+
+
+.channelContent{
+  display: inline-flex; 
+}
+
+
+.channelTitle{
+  position: relative;
+  color: white;
+  background-color: #2c3e50;
+  text-align: center;
+}
+
+.descriptionDiv{
+  color: #2c3e50;
+  padding: 5px;
+}
+
+.adminInfo{
+  text-align: center;
+  color: white;
 }
