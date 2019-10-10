@@ -130,7 +130,7 @@ class homepage  extends Component {
     
 
         //console.log(this.state.query);
-        const API_key ='AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ';
+        //const API_key ='AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ';
         //const API_key='AIzaSyCdZYM_1YvVxiOC4E9pIOcm2ems9RofYgw';
         //const API_key='AIzaSyDDJaRzAPz1S8zRZa3v3vvdx32tKCQZl2Q';
         //const API_key ='AIzaSyBEpVCkJdMTbTnoNhavYOMsqAfEJmMuEFs';
@@ -162,7 +162,7 @@ class homepage  extends Component {
 
 
         createChannelList = (channelList, index)=>{ 
-            const API_key ='AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ';
+            //const API_key ='AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ';
         
         
             let divElementForImages = document.createElement('div');
