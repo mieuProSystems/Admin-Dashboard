@@ -1,32 +1,31 @@
-import React, { Component } from 'react';
-
-
-
-class Modal extends Component {
-    constructor(props) {
-        super(props);
-    
-    }
-    render() { 
-        return (<div className="modal fade">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 className="modal-title">Modal title</h4>
-            </div>
-            <div className="modal-body">
-              <p>One fine body&hellip;</p>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" className="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>  );
-    }
+import React from 'react';
+import Modal from 'react-modal';
+function MyVerticallyCenteredModal(props) {
+  return (
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Modal heading
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <h4>Centered Modal</h4>
+        <p>
+          Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
+          dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
+          consectetur ac, vestibulum at eros.
+        </p>
+      </Modal.Body>
+      <Modal.Footer>
+        <button onClick={props.onHide}>Close</button>
+      </Modal.Footer>
+    </Modal>
+  );
 }
- 
-export default Modal;
 
+export default MyVerticallyCenteredModal;
