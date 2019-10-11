@@ -20,10 +20,6 @@ function App() {
       <Route path='/forgot' exact component={ForgotPassword} />
       <Route path='/newUser' exact component={NewUser} />
       <Route path='/home' exact component={HomePage}/>
-      
-      
-
-
     </div>
   );
 }
