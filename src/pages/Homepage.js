@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import Modal from 'react-bootstrap-modal';
 
+import { Button, ButtonToolbar } from 'reactstrap';
 
 import '../CSS/homepage.css';
 import IPADDRESS from '../components/server_ip';
+
+import ChannelModal from '../components/newusermodal';
 import { async } from 'q';
-import { NONAME } from 'dns';
 
 class homepage  extends Component {
 
     
-    componentDidMount(){
+    /*componentDidMount(){
 
     let searchResults = document.getElementById('searchResults');
     searchResults.style.display='none';
@@ -26,7 +28,7 @@ class homepage  extends Component {
             channelDiv.setAttribute('id', resultData['channelId']);
             channelDiv.setAttribute('class', 'channelDiv');
 
-            let title = '<h4><i>'+Number(index+1)+'. '+'</i>'+resultData['channelName']+'</h4>';
+            let title = '<h4><i>'+Number(index+1)+'. '+resultData['channelName']+'</i>'+'</h4>';
 
             let channelTitleDiv = document.createElement('div');
             channelTitleDiv.setAttribute("class","channelTitle");
@@ -82,7 +84,7 @@ class homepage  extends Component {
       });   
     }
 
-    
+    */
     constructor(props) {
         super(props);
         this.state={
@@ -94,9 +96,14 @@ class homepage  extends Component {
                     addedChannelId:'',
                     channelName:'',
                     videoIds:[],
-                    videoTitles:[]
+                    videoTitles:[],
+                    videoThumbnails:[],
+                    showModal:false,
+                    description:''
 
                     }
+                    
+
                 }
                 
 
@@ -162,8 +169,8 @@ class homepage  extends Component {
 
 
         createChannelList = (channelList, index)=>{ 
-            //const API_key ='AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ';
-        
+            //const API_key ='AIzaSyBEpVCkJdMTbTnoNhavYOMsqAfEJmMuEFs';
+
         
             let divElementForImages = document.createElement('div');
             divElementForImages.setAttribute('id','images'+index);
@@ -177,8 +184,9 @@ class homepage  extends Component {
                 var channelName =e.target.getAttribute('name');
 
                 await this.setState({channelName:channelName});
+                await this.setState({showModal:true});
 
-
+                
                 let addedChannelId = this.state.addedChannelId;
                 console.log(addedChannelId);
 
@@ -197,6 +205,7 @@ class homepage  extends Component {
 
                             await resultVideos['items'].map(this.getVideoId);
 
+                            
                             return fetch(IPADDRESS+'/home/add/channelVideos',{ 
             
                                 method: 'POST',
@@ -209,18 +218,26 @@ class homepage  extends Component {
                             })
                             .then(response => response.json())
                             .then(async(resultData) =>{
+
                                 console.log(resultData);
                                 await this.setState({videoIds:[]});
                                 await this.setState({videoTitles:[]});
+                                await this.setState({videoThumbnails:[]});
                                 
                                 })
-                            .catch((error) => {
+                            .catch(async(error) => {
                                 console.error(error);
+                                //await this.setState({videoIds:[]});
+                                //await this.setState({videoTitles:[]});
+                                //await this.setState({videoThumbnails:[]});
+                                
                               });
                          })
                       
                 }                                      
             };
+
+
             let thumbnailImage = document.createElement('img');
             thumbnailImage.setAttribute('src',channelList['snippet']['thumbnails']['default']['url']);
             divElementForImages.append(thumbnailImage);
@@ -232,10 +249,69 @@ class homepage  extends Component {
 
 
         getVideoId = async(videoList)=>{
-            await this.setState({videoIds:[...this.state.videoIds,videoList['id']['videoId']]});
+
+            let listofVideosDiv = document.createElement('div');
+
+            let videoDiv = document.createElement('div');
+            videoDiv.setAttribute('class', 'selectVideos');
+            videoDiv.setAttribute('videoId',videoList['id']['videoId']);
+            videoDiv.setAttribute('videoTitle', videoList['snippet']['title'] );
+            videoDiv.onclick= async(e)=>{
+
+                console.log(e.target.getAttribute('videoId'));
+                let videoIds = this.state.videoIds;
+
+                var index=videoIds.indexOf(e.target.getAttribute('videoId'));
+                console.log(index, this.state.videoIds);
+
+                if(index>-1){
+                    
+                    e.target.style.backgroundColor="white";
+                    e.target.style.color="black";
+                    videoIds.splice(index,1);
+                    await this.setState({videoIds:videoIds});
+                }
+                else{
+                    e.target.style.backgroundColor="#2c3e50";
+                    e.target.style.color="white";
+                    videoIds.push(e.target.getAttribute('videoId'));
+                    await this.setState({videoIds:videoIds});
+                }
+
+                
+            }
+
+            let videoImg = document.createElement('img');
+            videoImg.setAttribute('src', videoList['snippet']['thumbnails']['default']['url']);
+
+            videoDiv.innerHTML = videoList['snippet']['title'];
+
+            videoDiv.append(videoImg);
+
+            document.getElementById('modalWindow').append(videoDiv);
+
+
+
+            
+
+            //await this.setState({videoIds:[...this.state.videoIds,videoList['id']['videoId']]});
             await this.setState({videoTitles:[...this.state.videoTitles,videoList['snippet']['title']]});
+            await this.setState({videoThumbnails:[...this.state.videoThumbnails,videoList['snippet']['thumbnails']['default']['url']]});
+            //console.log(this.state.videoThumbnails);
+           
             }
     
+
+
+            addContent = () =>{
+                let temp = document.createElement("div");
+                temp.innerHTML="Good";
+
+                console.log(temp);
+
+
+                return (<h2>hai</h2>);
+            }
 
    // "test" in this.props.location?(
      //   <div>Welcome to VSMA..!</div>):(<div>{this.redirectToLogin()}</div>)
@@ -244,9 +320,9 @@ class homepage  extends Component {
     render() { 
 
         
-
+        const {descriptionState} = this.state.description;
         return ( 
-
+            
             <div className='container-fluid' style={{ display:'inline-flex', height:'100vh'}}>
                 <div className= 'col-lg-2 menuPanel'> 
 
@@ -282,6 +358,8 @@ class homepage  extends Component {
                 
                <div className='videoPanel col-lg-7' id='videosDisplay' onClick={()=>{console.log('clicked');}} style={{border:'2px', borderStyle:'solid', borderColor:'black', marginTop:'0px',backgroundColor:'white', overflow:'scroll'}}>
                 <h2>Welcome to VSMA...!</h2>
+
+                {this.addContent}
                 {/*<iframe src='http://www.mieupro.com'*/}
                
                 <iframe src='https://www.youtube.com/embed/x7qwz_1TjLk' 
@@ -292,6 +370,7 @@ class homepage  extends Component {
                 width='200px'
                 height="110px"
                 />
+            
                 </div> 
 
                 <div className='searchPanel col-lg-3' style={{ marginTop:'0px'}}>
@@ -303,6 +382,18 @@ class homepage  extends Component {
 
                     <div id="searchResults">
                     </div>
+
+
+      <ChannelModal
+        show={this.state.showModal}
+        onHide={() => {this.setState({showModal:false})}}
+        headerTitle="Select the videos from this Channel"
+        description={[<div id="modalWindow"></div>]}/>
+          
+
+      
+  
+  
             
                 </div>  
                 
