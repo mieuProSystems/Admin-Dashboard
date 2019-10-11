@@ -6,6 +6,7 @@
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "react": "^16.9.0",
+    "react-bootstrap": "^1.0.0-beta.14",
     "react-bootstrap-modal": "^4.2.0",
     "react-dom": "^16.9.0",
     "react-modal": "^3.10.1",
