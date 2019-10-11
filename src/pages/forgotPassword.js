@@ -28,7 +28,7 @@ class forgetPassword  extends Component {
         e.preventDefault();
         await this.setState({isLoading:true});
         
-        fetch(IPADDRESS+'/forgot',{ 
+        fetch(IPADDRESS+'/forgotPassword',{ 
             
             method: 'POST',
             headers: {
@@ -77,7 +77,7 @@ class forgetPassword  extends Component {
                                 <label>Enter Your Registered mail:</label>
                                 <Input type="email" name='userMail' value={this.state.user_mail} placeholder="user@example.com" onChange={this.handleChange} required/><br/><br/>
                              
-                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Request to change password</button>):(<Button_Cls name='Request to Change Password'/>)}
+                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Request password</button>):(<Button_Cls name='Request Password'/>)}
                             </form>
                         </div>
                     </div>
