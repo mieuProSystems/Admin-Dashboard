@@ -11,7 +11,8 @@ import Button_Cls from '../components/button';
 
 import '../loginPage.css';
 import '../CSS/newUserRegistration.css';
-import Modal from '../components/showModal'
+
+import NewUserModal from '../components/newusermodal';
 
 import IPADDRESS from '../components/server_ip';
 
@@ -101,7 +102,6 @@ class newUser  extends Component {
     handleRegisterCredential=async(event)=>{
         event.preventDefault();
         await this.setState({isLoading:true});
-        await this.setState({showModal: true});
         
         const{isPasswordMatched}=this.state;
         console.log(this.state);
@@ -132,16 +132,13 @@ class newUser  extends Component {
                     displayRegisterStatus.style.color="red";
                 }
                 else{
-                    let displayRegisterStatus=document.getElementById("registerErrorInfo");
-                    displayRegisterStatus.innerHTML = resultData['description'];
-                    alert(resultData['description']);
-                    displayRegisterStatus.style.color="lightgreen";
+                    this.setState({description:resultData['description']});
+                    this.setState({showModal: true});
                 }
             })
             .catch(error =>{
                 console.log(error);
                 this.setState({isLoading:false});
-        
             })
         
         }
@@ -194,8 +191,16 @@ class newUser  extends Component {
 
                                 {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Register</button>):(<Button_Cls name='Register'/>)}
                                 
-                    
                             </form>
+
+                            <NewUserModal
+                            show={this.state.showModal}
+                            onHide={() => {this.setState({showModal:false})}}
+                            description={this.state.description}
+                            headerTitle='Thanks For Registration'
+                            />
+      
+
                         </div>
                     </div>
 
