@@ -25,7 +25,10 @@ function newUserModal(props) {
         </p>
       </Modal.Body>
       <Modal.Footer>
+
         <Button onClick={props.onHide}>Close</Button>
+        {props.footerbutton}
+
       </Modal.Footer>
     </Modal>
   );
