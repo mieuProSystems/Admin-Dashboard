@@ -12,7 +12,7 @@ import { async } from 'q';
 class homepage  extends Component {
 
     
-    /*componentDidMount(){
+    componentDidMount(){
 
     let searchResults = document.getElementById('searchResults');
     searchResults.style.display='none';
@@ -40,26 +40,29 @@ class homepage  extends Component {
             channelContentDiv.setAttribute("class","channelContent");
     
             await resultData['videoIds'].map((channelVideosList, index)=>{
+                //console.log(resultData['videoIds'][index]);
 
                 let videoDiv = document.createElement('div');
                 videoDiv.setAttribute('class', 'videosofthechannel');
-               
-                let videoIframe = document.createElement('iframe');
-                videoIframe.setAttribute('videoId', channelVideosList);
-                videoIframe.setAttribute('frameBorder','0');
-               // videoIframe.setAttribute('autoplay; encrypted-media');
-                //videoIframe.setAttribute('allowFullScreen');
+                videoDiv.setAttribute('videoId', channelVideosList);
                 
+                videoDiv.onclick=(e)=>{
+                    console.log(channelVideosList);
+                    window.open('https://www.youtube.com/watch?v='+channelVideosList);
+                    //window.open('https://www.youtube.com/embed/'+channelVideosList);
                 
-                videoIframe.width='250px'
-                videoIframe.height="130px"
-
-                
-               
-                videoIframe.src = 'http://www.youtube.com/embed/'+channelVideosList;
-                videoDiv.append(videoIframe);
+                }
                 
                 console.log(resultData['videoTitles'][index]);
+
+                let videoImg = document.createElement('img');
+                videoImg.setAttribute('src', resultData['videoThumbnails'][index]);
+                videoDiv.append(videoImg);
+                videoImg.style.width='250px'
+                videoImg.style.height="130px"
+
+                
+
                 let description = '<h6><i>'+Number(index+1)+'. '+'</i>'+resultData['videoTitles'][index]+'</h6>';
 
                 let descriptionDiv = document.createElement('div');
@@ -84,7 +87,7 @@ class homepage  extends Component {
       });   
     }
 
-    */
+    
     constructor(props) {
         super(props);
         this.state={
@@ -99,7 +102,9 @@ class homepage  extends Component {
                     videoTitles:[],
                     videoThumbnails:[],
                     showModal:false,
-                    description:''
+                    description:'',
+                    selectedVideosCount:'0',
+                    selectAllBoxChecked:false
 
                     }
                     
@@ -169,8 +174,8 @@ class homepage  extends Component {
 
 
         createChannelList = (channelList, index)=>{ 
-            //const API_key ='AIzaSyBEpVCkJdMTbTnoNhavYOMsqAfEJmMuEFs';
-
+            //const API_key='AIzaSyDDJaRzAPz1S8zRZa3v3vvdx32tKCQZl2Q';
+        
         
             let divElementForImages = document.createElement('div');
             divElementForImages.setAttribute('id','images'+index);
@@ -184,14 +189,16 @@ class homepage  extends Component {
                 var channelName =e.target.getAttribute('name');
 
                 await this.setState({channelName:channelName});
-                await this.setState({showModal:true});
-
+                
                 
                 let addedChannelId = this.state.addedChannelId;
                 console.log(addedChannelId);
 
 
                     await this.setState({addedChannelId:addChannel});
+
+                    await this.setState({showModal:true});
+
 
                     let confirm=window.confirm("Do you want to get the videos from this channel?");
 
@@ -205,34 +212,8 @@ class homepage  extends Component {
 
                             await resultVideos['items'].map(this.getVideoId);
 
-                            
-                            return fetch(IPADDRESS+'/home/add/channelVideos',{ 
-            
-                                method: 'POST',
-                                headers: {
-                                    
-                                    'Content-Type': 'application/json',    
-                                },
-                                body:JSON.stringify({channelName:this.state.channelName,channelId:this.state.addedChannelId, videoIds:this.state.videoIds, videoTitles:this.state.videoTitles, currentTime:this.state.currentTime, currentDate:this.state.currentDate}) 
-                                
-                            })
-                            .then(response => response.json())
-                            .then(async(resultData) =>{
-
-                                console.log(resultData);
-                                await this.setState({videoIds:[]});
-                                await this.setState({videoTitles:[]});
-                                await this.setState({videoThumbnails:[]});
-                                
-                                })
-                            .catch(async(error) => {
-                                console.error(error);
-                                //await this.setState({videoIds:[]});
-                                //await this.setState({videoTitles:[]});
-                                //await this.setState({videoThumbnails:[]});
-                                
-                              });
                          })
+                        
                       
                 }                                      
             };
@@ -250,34 +231,48 @@ class homepage  extends Component {
 
         getVideoId = async(videoList)=>{
 
-            let listofVideosDiv = document.createElement('div');
-
+                
             let videoDiv = document.createElement('div');
             videoDiv.setAttribute('class', 'selectVideos');
             videoDiv.setAttribute('videoId',videoList['id']['videoId']);
             videoDiv.setAttribute('videoTitle', videoList['snippet']['title'] );
+            videoDiv.setAttribute('videoThumbnail',videoList['snippet']['thumbnails']['high']['url'])
             videoDiv.onclick= async(e)=>{
 
-                console.log(e.target.getAttribute('videoId'));
+                document.getElementById('checkbox').checked = false;
+                //console.log(e.target.getAttribute('videoId'));
                 let videoIds = this.state.videoIds;
+                let videoTitles= this.state.videoTitles;
+                let videoThumbnails = this.state.videoThumbnails;
 
+                
                 var index=videoIds.indexOf(e.target.getAttribute('videoId'));
-                console.log(index, this.state.videoIds);
-
+                
                 if(index>-1){
                     
                     e.target.style.backgroundColor="white";
                     e.target.style.color="black";
                     videoIds.splice(index,1);
-                    await this.setState({videoIds:videoIds});
+                    videoTitles.splice(index,1);
+                    videoThumbnails.splice(index,1);
+                    await this.setState({videoIds:videoIds, videoTitles:videoTitles, videoThumbnails:videoThumbnails});
+                    await this.setState({selectedVideosCount:videoIds.length});
                 }
                 else{
                     e.target.style.backgroundColor="#2c3e50";
                     e.target.style.color="white";
                     videoIds.push(e.target.getAttribute('videoId'));
-                    await this.setState({videoIds:videoIds});
+                    videoTitles.push(e.target.getAttribute('videoTitle'));
+                    videoThumbnails.push(e.target.getAttribute('videoThumbnail'));
+                    
+                    await this.setState({videoIds:videoIds, videoTitles:videoTitles, videoThumbnails:videoThumbnails});
+                    await this.setState({selectedVideosCount:videoIds.length});
+                
                 }
-
+                //console.log(index, this.state.videoIds);
+                //console.log(this.state.videoThumbnails);
+                //console.log(this.state.videoTitles);
+    
                 
             }
 
@@ -294,11 +289,10 @@ class homepage  extends Component {
 
             
 
-            //await this.setState({videoIds:[...this.state.videoIds,videoList['id']['videoId']]});
-            await this.setState({videoTitles:[...this.state.videoTitles,videoList['snippet']['title']]});
-            await this.setState({videoThumbnails:[...this.state.videoThumbnails,videoList['snippet']['thumbnails']['default']['url']]});
-            //console.log(this.state.videoThumbnails);
-           
+            //await this.setState({videoIds:[...this.state.videoIds,videoList['id']['videoId']],videoTitles:[...this.state.videoTitles,videoList['snippet']['title']], videoThumbnails:[...this.state.videoThumbnails,videoList['snippet']['thumbnails']['high']['url']]});
+            //await this.setState({videoTitles:[...this.state.videoTitles,videoList['snippet']['title']]});
+            //await this.setState({videoThumbnails:[...this.state.videoThumbnails,videoList['snippet']['thumbnails']['default']['url']]});
+            
             }
     
 
@@ -317,19 +311,85 @@ class homepage  extends Component {
      //   <div>Welcome to VSMA..!</div>):(<div>{this.redirectToLogin()}</div>)
 
 
+     addVideosIntoDB = ()=>{
+        this.setState({showModal:false});
+
+        console.log(this.state);
+     
+        fetch(IPADDRESS+'/home/add/channelVideos',{ 
+
+            method: 'POST',
+            headers: {
+                
+                'Content-Type': 'application/json',    
+            },
+            body:JSON.stringify({channelName:this.state.channelName,channelId:this.state.addedChannelId, videoThumbnails:this.state.videoThumbnails, videoIds:this.state.videoIds, videoTitles:this.state.videoTitles, currentTime:this.state.currentTime, currentDate:this.state.currentDate}) 
+            
+        })
+        .then(response => response.json())
+        .then(async(resultData) =>{
+
+            console.log(resultData);
+            await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
+            
+
+            
+            })
+        .catch(async(error) => {
+            console.error(error);
+            await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
+
+            //await this.setState({videoIds:[]});
+            //await this.setState({videoTitles:[]});
+            //await this.setState({videoThumbnails:[]});
+            
+          });
+
+          window.location.reload();
+        }
+
+
+
+    selectAll = async()=>{
+    
+        await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[], selectAllBoxChecked:!this.state.selectAllBoxChecked});
+        
+        
+        let allDiv = document.getElementsByClassName('selectVideos');
+        for (let i=0; i<allDiv.length;i++)
+        {
+            let childDiv = document.getElementsByClassName('selectVideos')[i];
+
+            if(this.state.selectAllBoxChecked){
+            await this.setState({videoIds:[...this.state.videoIds, childDiv.getAttribute('videoId')], videoTitles:[...this.state.videoTitles, childDiv.getAttribute('videoTitle')], videoThumbnails:[...this.state.videoThumbnails, childDiv.getAttribute('videoThumbnail')]});
+            childDiv.style.color='white';
+            childDiv.style.backgroundColor='#2c3e50';
+            }
+            else{
+                childDiv.style.color='#2c3e50';
+                childDiv.style.backgroundColor='white';
+            }
+        
+        }
+        await this.setState({selectedVideosCount:this.state.videoIds.length});
+    
+    
+}
+
+
     render() { 
 
         
-        const {descriptionState} = this.state.description;
+        //const {descriptionState} = this.state.description;
         return ( 
             
             <div className='container-fluid' style={{ display:'inline-flex', height:'100vh'}}>
                 <div className= 'col-lg-2 menuPanel'> 
 
 
-                    <div className='adminInfo'>
+                   {/*} <div className='adminInfo'>
                     <h3>Admin Info</h3> 
-                    </div>
+        </div>*/}
                     {/*    <span>Name:{this.props.location}</span>*/}
                     
                     
@@ -340,7 +400,7 @@ class homepage  extends Component {
                     <div className="menu" >Manage Users</div>
                     <div className="menu" >Manage Videos</div>
                     <div className="menu" >Notifications</div>
-                    <div className="menu" >Google Admob</div>
+                    {/*<div className="menu" >Google Admob</div>*/}
                     <div className="menu" >Log History</div>
                     <div className="menu" >Log out</div>
 
@@ -356,11 +416,11 @@ class homepage  extends Component {
 
                 
                 
-               <div className='videoPanel col-lg-7' id='videosDisplay' onClick={()=>{console.log('clicked');}} style={{border:'2px', borderStyle:'solid', borderColor:'black', marginTop:'0px',backgroundColor:'white', overflow:'scroll'}}>
-                <h2>Welcome to VSMA...!</h2>
+               <div className='videoPanel col-lg-7' id='videosDisplay'  style={{marginTop:'0px',backgroundColor:'white', overflow:'scroll'}}>
+                <center><h2>Welcome!</h2></center>
 
-                {this.addContent}
-                {/*<iframe src='http://www.mieupro.com'*/}
+                
+                {/*<iframe src='http://www.mieupro.com'
                
                 <iframe src='https://www.youtube.com/embed/x7qwz_1TjLk' 
                 frameBorder='0'
@@ -370,6 +430,7 @@ class homepage  extends Component {
                 width='200px'
                 height="110px"
                 />
+                */}
             
                 </div> 
 
@@ -386,16 +447,17 @@ class homepage  extends Component {
 
       <ChannelModal
         show={this.state.showModal}
-        onHide={() => {this.setState({showModal:false})}}
-        headerTitle="Select the videos from this Channel"
-        description={[<div id="modalWindow"></div>]}/>
+        onHide={() => {this.setState({showModal:false, selectAllBoxChecked:false, videoIds:[], videoTitles:[], videoThumbnails:[],selectedVideosCount:0})}}
+        headerTitle={ [ <div id='modalTitle'>Select the videos from this Channel  </div>]}
+        description={[<div id="modalWindow"><center><div><label>
+        Select All the Videos from this page
+        <input type="checkbox" id='checkbox' onChange={this.selectAll} /></label></div><h6>------ Or ------</h6> <h6><i>( Click the Videos To Select )</i>  </h6></center></div>]}
+        footerbutton={[<div><Button onClick={this.addVideosIntoDB}>Get Videos ( {this.state.selectedVideosCount} )</Button></div>]}
+        
+        />
           
 
-      
-  
-  
-            
-                </div>  
+      </div>  
                 
 
         
