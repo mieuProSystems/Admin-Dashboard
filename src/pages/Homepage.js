@@ -7,12 +7,19 @@ import '../CSS/homepage.css';
 import IPADDRESS from '../components/server_ip';
 
 import ChannelModal from '../components/newusermodal';
+
+import LogoutModal from '../components/logoutModal';
+
+import AccountInfo from '../pages/accountInfo';
+import Notifications from '../pages/notification';
+
 import { async } from 'q';
 
 class homepage  extends Component {
 
     
     componentDidMount(){
+        
 
     let searchResults = document.getElementById('searchResults');
     searchResults.style.display='none';
@@ -23,7 +30,7 @@ class homepage  extends Component {
     .then(resultData =>{
         resultData.map(async(resultData, index)=>{ 
 
-            console.log(resultData);
+            //console.log(resultData);
             var channelDiv = document.createElement('div');
             channelDiv.setAttribute('id', resultData['channelId']);
             channelDiv.setAttribute('class', 'channelDiv');
@@ -53,7 +60,7 @@ class homepage  extends Component {
                 
                 }
                 
-                console.log(resultData['videoTitles'][index]);
+                //console.log(resultData['videoTitles'][index]);
 
                 let videoImg = document.createElement('img');
                 videoImg.setAttribute('src', resultData['videoThumbnails'][index]);
@@ -76,10 +83,7 @@ class homepage  extends Component {
                
             });
 
-            document.getElementById('videosDisplay').appendChild(channelDiv);
-
-
-            
+            document.getElementById('home').appendChild(channelDiv);    
         })
         })
     .catch((error) => {
@@ -104,16 +108,15 @@ class homepage  extends Component {
                     showModal:false,
                     description:'',
                     selectedVideosCount:'0',
-                    selectAllBoxChecked:false
+                    selectAllBoxChecked:false,
+                    showLogoutModal:false
 
                     }
                     
-
                 }
                 
 
     componentWillMount(){
-        
         //console.log(this.props.loaction);
         setInterval(function(){
             this.setState({
@@ -144,13 +147,13 @@ class homepage  extends Component {
         //console.log(this.state.query);
         //const API_key ='AIzaSyAkil4byfMtp3vQdZBKojnbrJMbaxYsIDQ';
         //const API_key='AIzaSyCdZYM_1YvVxiOC4E9pIOcm2ems9RofYgw';
-        //const API_key='AIzaSyDDJaRzAPz1S8zRZa3v3vvdx32tKCQZl2Q';
+        const API_key='AIzaSyDDJaRzAPz1S8zRZa3v3vvdx32tKCQZl2Q';
         //const API_key ='AIzaSyBEpVCkJdMTbTnoNhavYOMsqAfEJmMuEFs';
 
         const typeOfData='channel';
         const query=this.state.query;
         const maxResults = 50;
-        let nextCall=false;
+        //let nextCall=false;
         //let nextPageToken;
 
         const fetchUrl='https://www.googleapis.com/youtube/v3/search?part=snippet&type='+typeOfData+'&q='+ query +'&key='+API_key+'&maxResults='+maxResults;
@@ -160,13 +163,12 @@ class homepage  extends Component {
           .then((response) => {if(response.status === 200){return response.json();}else{alert('error occured! Check Your console!');throw new Error(response.status);}})
           .then((resultData) => {  
                     console.log(resultData);
-                    
                     this.setState({resultChannelData:resultData})
-                })
+            })
           .then(()=>{ document.getElementById('searchResults').innerHTML='';
                         //console.log(this.state);
                         this.state.resultChannelData['items'].map(this.createChannelList)
-                    })
+            })
           .catch((error) => {
             console.error(error);
           });
@@ -174,7 +176,7 @@ class homepage  extends Component {
 
 
         createChannelList = (channelList, index)=>{ 
-            //const API_key='AIzaSyDDJaRzAPz1S8zRZa3v3vvdx32tKCQZl2Q';
+            const API_key='AIzaSyDDJaRzAPz1S8zRZa3v3vvdx32tKCQZl2Q';
         
         
             let divElementForImages = document.createElement('div');
@@ -268,12 +270,7 @@ class homepage  extends Component {
                     await this.setState({videoIds:videoIds, videoTitles:videoTitles, videoThumbnails:videoThumbnails});
                     await this.setState({selectedVideosCount:videoIds.length});
                 
-                }
-                //console.log(index, this.state.videoIds);
-                //console.log(this.state.videoThumbnails);
-                //console.log(this.state.videoTitles);
-    
-                
+                }     
             }
 
             let videoImg = document.createElement('img');
@@ -295,17 +292,6 @@ class homepage  extends Component {
             
             }
     
-
-
-            addContent = () =>{
-                let temp = document.createElement("div");
-                temp.innerHTML="Good";
-
-                console.log(temp);
-
-
-                return (<h2>hai</h2>);
-            }
 
    // "test" in this.props.location?(
      //   <div>Welcome to VSMA..!</div>):(<div>{this.redirectToLogin()}</div>)
@@ -331,17 +317,11 @@ class homepage  extends Component {
 
             console.log(resultData);
             await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
-            
-
-            
             })
         .catch(async(error) => {
             console.error(error);
             await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
 
-            //await this.setState({videoIds:[]});
-            //await this.setState({videoTitles:[]});
-            //await this.setState({videoThumbnails:[]});
             
           });
 
@@ -371,11 +351,29 @@ class homepage  extends Component {
             }
         
         }
-        await this.setState({selectedVideosCount:this.state.videoIds.length});
-    
-    
+        await this.setState({selectedVideosCount:this.state.videoIds.length}); 
 }
 
+
+   menuNavigation=(parameter, event)=>{
+
+    //console.log(parameter, event);
+
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        tablinks = document.getElementsByClassName("menu");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(parameter).style.display = "block";
+        event.currentTarget.className += " active";
+        }
+  
+  
 
     render() { 
 
@@ -395,14 +393,15 @@ class homepage  extends Component {
                     
                     <div className='vertical-menu'>
                     
-                    <div className="menu" >Home</div>
-                    <div className="menu" >Account Information</div>
-                    <div className="menu" >Manage Users</div>
-                    <div className="menu" >Manage Videos</div>
-                    <div className="menu" >Notifications</div>
+                    <div className="menu" onClick={(event) => {this.menuNavigation("home", event)}} >Home</div>
+                    <div className="menu " onClick={(event) => {this.menuNavigation("accountInfo", event)}} >Account Information</div>
+                    <div className="menu" onClick={(event) => {this.menuNavigation("manageUsers", event)}}>Manage Users</div>
+                    <div className="menu" onClick={(event) => {this.menuNavigation("manageVideos", event)}}>Manage Videos</div>
+                    <div className="menu active" onClick={(event) => {this.menuNavigation("notifications", event)}}>Notifications</div>
                     {/*<div className="menu" >Google Admob</div>*/}
-                    <div className="menu" >Log History</div>
-                    <div className="menu" >Log out</div>
+                    <div className="menu" onClick={(event) => {this.menuNavigation("logHistory", event)}}>Log History</div>
+                    <div className="menu" onClick={(event) => {this.setState({showLogoutModal:true});this.menuNavigation("logout", event)}}>Log out</div>
+                    
 
                     </div>
 
@@ -416,9 +415,8 @@ class homepage  extends Component {
 
                 
                 
-               <div className='videoPanel col-lg-7' id='videosDisplay'  style={{marginTop:'0px',backgroundColor:'white', overflow:'scroll'}}>
-                <center><h2>Welcome!</h2></center>
-
+               <div className='videoPanel col-lg-7'   style={{marginTop:'0px',backgroundColor:'white', overflow:'scroll'}}>
+                
                 
                 {/*<iframe src='http://www.mieupro.com'
                
@@ -431,6 +429,42 @@ class homepage  extends Component {
                 height="110px"
                 />
                 */}
+                <div id='home' style={{display:'none'}} className='tabcontent'><center><h2>Welcome!</h2></center>
+</div>
+
+                <div id="accountInfo"  style={{display:'none'}} className="tabcontent">
+                <AccountInfo/>
+                </div>
+
+                <div id="manageUsers" style={{display:'none'}} className="tabcontent">
+                <h1>User Info</h1>
+                </div>
+
+                <div id="manageVideos" style={{display:'none'}} className="tabcontent">
+                <h1>Manage Videos</h1>
+                </div>
+                <div id="notifications" className="tabcontent">
+                <Notifications/>
+                </div>
+                <div id="logHistory" style={{display:'none'}} className="tabcontent">
+                <h1>Log History</h1>
+                </div>
+
+                <div id="logout" style={{display:'none'}} className="tabcontent">
+                <LogoutModal
+                    show={this.state.showLogoutModal}
+                    onHide={() => {this.setState({showLogoutModal:false})}}
+                    headerTitle={ [ <div id='modalTitle'> Logout  </div>]}
+                    description={[<div id="modalWindow"><div>  Do you want to exit from this panel? </div></div>]}
+                    logout={()=>{}}
+                />
+                
+                </div>
+
+                
+      
+
+
             
                 </div> 
 
@@ -445,26 +479,20 @@ class homepage  extends Component {
                     </div>
 
 
-      <ChannelModal
-        show={this.state.showModal}
-        onHide={() => {this.setState({showModal:false, selectAllBoxChecked:false, videoIds:[], videoTitles:[], videoThumbnails:[],selectedVideosCount:0})}}
-        headerTitle={ [ <div id='modalTitle'>Select the videos from this Channel  </div>]}
-        description={[<div id="modalWindow"><center><div><label>
-        Select All the Videos from this page
-        <input type="checkbox" id='checkbox' onChange={this.selectAll} /></label></div><h6>------ Or ------</h6> <h6><i>( Click the Videos To Select )</i>  </h6></center></div>]}
-        footerbutton={[<div><Button onClick={this.addVideosIntoDB}>Get Videos ( {this.state.selectedVideosCount} )</Button></div>]}
-        
+        <ChannelModal
+            show={this.state.showModal}
+            onHide={() => {this.setState({showModal:false, selectAllBoxChecked:false, videoIds:[], videoTitles:[], videoThumbnails:[],selectedVideosCount:0})}}
+            headerTitle={ [ <div id='modalTitle'>Select the videos from this Channel  </div>]}
+            description={[<div id="modalWindow"><center><div><label>
+            Select All the Videos from this page
+            <input type="checkbox" id='checkbox' onChange={this.selectAll} /></label></div><h6>------ Or ------</h6> <h6><i>( Click the Videos To Select )</i>  </h6></center></div>]}
+            footerbutton={[<div><Button onClick={this.addVideosIntoDB}>Get Videos ( {this.state.selectedVideosCount} )</Button></div>]}   
         />
           
 
-      </div>  
-                
-
+      </div>
         
-            
-            
-            </div>
-            );
+    </div>);
 }
 }
  
