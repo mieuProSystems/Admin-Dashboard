@@ -13,8 +13,9 @@
     font-size: 20px;
   }
   .menu:hover {
-    background-color:#eee; /* Dark grey background on mouse-over */
+    background-color:white;
     color:#2c3e50;
+    cursor: pointer;
     }
 
   .dateAndTime{
@@ -126,4 +127,11 @@
   background-color: #2c3e50;
   color: white;
   cursor: pointer;
+}
+
+
+
+.menu.active{
+  color:#2c3e50;
+  background-color:white;
 }
