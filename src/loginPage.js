@@ -40,7 +40,7 @@ class login  extends Component {
         await this.setState({isLoading:true});
         console.log(this.state);
   
-        fetch(IPADDRESS+'/login',{ 
+        fetch(IPADDRESS+'/admin/login',{ 
             
             method: 'POST',
             headers: {
@@ -72,7 +72,7 @@ class login  extends Component {
             // prevent direct accessing the Url without login
             if(resultData['token']){
                 console.log(resultData);
-                //this.props.history.push('/home',{response:resultData});
+                this.props.history.push('/home',{response:resultData});
                 }
             else{
                 console.log("Please Login");
@@ -142,7 +142,7 @@ class login  extends Component {
                             Login in to your account
                         </div>
                         
-                        {("test" in this.props.location)?(<p>{this.props.location.test.info}</p>):(<p></p>)}
+                        {("test" in this.props.location)?(<p style={{color:'lightgreen'}}>{this.props.location.test.info}</p>):(<p></p>)}
     
                         <div id="loginStatusInfo"></div>
                         <div className="form_value">
