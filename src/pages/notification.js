@@ -7,7 +7,7 @@ class notification extends Component {
     }
 
     componentDidMount(){
-        fetch(IPADDRESS+'/home/user/getFeedback')
+        fetch(IPADDRESS+'/home/admin/getFeedback')
         .then(response=>response.json())
         .then((resultData)=>{
             console.log(resultData);

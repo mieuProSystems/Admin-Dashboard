@@ -113,7 +113,7 @@ class newUser  extends Component {
             document.getElementById('registerErrorInfo').innerHTML="";
 
 
-            fetch(IPADDRESS+'/register',{ 
+            fetch(IPADDRESS+'/admin/register',{ 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',    
