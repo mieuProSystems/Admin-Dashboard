@@ -38,7 +38,9 @@ class login  extends Component {
         event.preventDefault();
         
         await this.setState({isLoading:true});
-        console.log(this.state);
+        //console.log(this.state);
+
+        //document.getElementById('log').innerHTML='';
   
         fetch(IPADDRESS+'/admin/login',{ 
             
@@ -142,7 +144,7 @@ class login  extends Component {
                             Login in to your account
                         </div>
                         
-                        {("test" in this.props.location)?(<p style={{color:'lightgreen'}}>{this.props.location.test.info}</p>):(<p></p>)}
+                        {("test" in this.props.location)?(<p id="log" style={{color:'lightgreen'}}>{this.props.location.test.info}</p>):(<p></p>)}
     
                         <div id="loginStatusInfo"></div>
                         <div className="form_value">
