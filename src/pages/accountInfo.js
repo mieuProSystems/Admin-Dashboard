@@ -14,7 +14,16 @@ class accountinfo  extends Component {
     componentDidMount(){
         //console.log("Hai---------------------");
 
-        fetch(IPADDRESS +'/home/accountInformation/getAdminDetails')
+        fetch(IPADDRESS +'/home/accountInformation/getAdminDetails',{ 
+
+            method: 'POST',
+            headers: {
+                
+                'Content-Type': 'application/json',    
+            },
+            body:JSON.stringify({loginToken:this.props.token})
+            
+        })
         .then(response=>response.json())
         .then(async(resultData)=>{
 
@@ -61,7 +70,7 @@ class accountinfo  extends Component {
     handleCredentials = (e)=>{
         document.getElementById('verifyButton').disabled=true;
         e.preventDefault();
-        fetch(IPADDRESS+'/changePassword',{ 
+        fetch(IPADDRESS+'/admin/changePassword',{ 
             
             method: 'POST',
             headers: {
@@ -95,7 +104,7 @@ class accountinfo  extends Component {
         e.preventDefault();
         document.getElementById('verifyButton').disabled=true;
         
-        fetch(IPADDRESS+'/newPassword',{ 
+        fetch(IPADDRESS+'/admin/newPassword',{ 
             
             method: 'POST',
             headers: {
