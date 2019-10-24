@@ -20,10 +20,9 @@ class homepage  extends Component {
     
     componentDidMount(){
         
-
     let searchResults = document.getElementById('searchResults');
     searchResults.style.display='none';
-     // ("test" in this.props.location)?(console.log("got Key")):(console.log("Key missed"));
+     
 
     fetch(IPADDRESS+'/home/getVideos')
     .then(response => response.json())
@@ -54,9 +53,9 @@ class homepage  extends Component {
                 videoDiv.setAttribute('videoId', channelVideosList);
                 
                 videoDiv.onclick=(e)=>{
-                    console.log(channelVideosList);
-                    window.open('https://www.youtube.com/watch?v='+channelVideosList);
-                    //window.open('https://www.youtube.com/embed/'+channelVideosList);
+                    //console.log(channelVideosList);
+                    //window.open('https://www.youtube.com/watch?v='+channelVideosList);
+                    window.open('https://www.youtube.com/embed/'+channelVideosList);
                 
                 }
                 
@@ -127,8 +126,11 @@ class homepage  extends Component {
         }.bind(this), 1000);
     }
 
-    redirectToLogin =()=>{
+    redirectToLogin =async()=>{
+        console.log(this.props.location);
         this.props.history.push({pathname:'/', test:{info:'Please Login...!'}});
+        await window.location.reload();
+
     }
 
 
@@ -317,15 +319,17 @@ class homepage  extends Component {
 
             console.log(resultData);
             await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
+            await window.location.reload();
             })
         .catch(async(error) => {
             console.error(error);
             await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
+            await window.location.reload();
 
             
           });
 
-          window.location.reload();
+         
         }
 
 
@@ -378,9 +382,10 @@ class homepage  extends Component {
     render() { 
 
         
-        //const {descriptionState} = this.state.description;
+        
         return ( 
             
+            (this.props.location.state===undefined)?(<div>{this.redirectToLogin()}</div>):(
             <div className='container-fluid' style={{ display:'inline-flex', height:'100vh'}}>
                 <div className= 'col-lg-2 menuPanel'> 
 
@@ -393,11 +398,11 @@ class homepage  extends Component {
                     
                     <div className='vertical-menu'>
                     
-                    <div className="menu" onClick={(event) => {this.menuNavigation("home", event)}} >Home</div>
+                    <div className="menu active" onClick={(event) => {this.menuNavigation("home", event)}} >Home</div>
                     <div className="menu " onClick={(event) => {this.menuNavigation("accountInfo", event)}} >Account Information</div>
                     <div className="menu" onClick={(event) => {this.menuNavigation("manageUsers", event)}}>Manage Users</div>
                     <div className="menu" onClick={(event) => {this.menuNavigation("manageVideos", event)}}>Manage Videos</div>
-                    <div className="menu active" onClick={(event) => {this.menuNavigation("notifications", event)}}>Notifications</div>
+                    <div className="menu " onClick={(event) => {this.menuNavigation("notifications", event)}}>Notifications</div>
                     {/*<div className="menu" >Google Admob</div>*/}
                     <div className="menu" onClick={(event) => {this.menuNavigation("logHistory", event)}}>Log History</div>
                     <div className="menu" onClick={(event) => {this.setState({showLogoutModal:true});this.menuNavigation("logout", event)}}>Log out</div>
@@ -429,11 +434,11 @@ class homepage  extends Component {
                 height="110px"
                 />
                 */}
-                <div id='home' style={{display:'none'}} className='tabcontent'><center><h2>Welcome!</h2></center>
+                <div id='home' className='tabcontent'><center><h2>Welcome!</h2></center>
 </div>
 
                 <div id="accountInfo"  style={{display:'none'}} className="tabcontent">
-                <AccountInfo/>
+                <AccountInfo token={this.props.location.state.response.token}/>
                 </div>
 
                 <div id="manageUsers" style={{display:'none'}} className="tabcontent">
@@ -443,7 +448,7 @@ class homepage  extends Component {
                 <div id="manageVideos" style={{display:'none'}} className="tabcontent">
                 <h1>Manage Videos</h1>
                 </div>
-                <div id="notifications" className="tabcontent">
+                <div id="notifications" style={{display:'none'}} className="tabcontent">
                 <Notifications/>
                 </div>
                 <div id="logHistory" style={{display:'none'}} className="tabcontent">
@@ -456,7 +461,30 @@ class homepage  extends Component {
                     onHide={() => {this.setState({showLogoutModal:false})}}
                     headerTitle={ [ <div id='modalTitle'> Logout  </div>]}
                     description={[<div id="modalWindow"><div>  Do you want to exit from this panel? </div></div>]}
-                    logout={()=>{}}
+                    logout={async()=>{// console.log(this.props.location.state.response.token); 
+                        await fetch(IPADDRESS+'/admin/logout',{
+                        method: 'POST',
+            headers: {
+                
+                'Content-Type': 'application/json',    
+            },
+            body:JSON.stringify({loginToken:this.props.location.state.response.token})
+            
+                    })
+                    .then(response=>response.json())
+                    .then((resultData)=>{
+                        console.log(resultData);
+                            
+                        if(resultData['status']==='success'){
+                            this.props.history.push({pathname:'/', test:{info:'Logged Out Successfully!'}});
+                        }
+                        else{
+
+                        }
+                    })
+                    .catch(e=>{console.log(e);})
+                
+                }}
                 />
                 
                 </div>
@@ -492,7 +520,9 @@ class homepage  extends Component {
 
       </div>
         
-    </div>);
+    </div>)
+    
+);
 }
 }
  
