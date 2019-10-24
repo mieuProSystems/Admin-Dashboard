@@ -28,7 +28,7 @@ class forgetPassword  extends Component {
         e.preventDefault();
         await this.setState({isLoading:true});
         
-        fetch(IPADDRESS+'/forgotPassword',{ 
+        fetch(IPADDRESS+'/admin/forgotPassword',{ 
             
             method: 'POST',
             headers: {
