@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import {Label, Input, Spinner, Button, Modal, ButtonToolbar} from 'reactstrap';
+import {Label, Input, Spinner} from 'reactstrap';
 import Header from './components/header';
-import Button_cls from './components/button';
+import ButtonCls from './components/button';
 import './loginPage.css';
 
 
@@ -30,7 +30,6 @@ class login  extends Component {
     // Set value of the state variables
     setFormValues=(event)=>{
         this.setState({[event.target.name]:event.target.value});
-        //console.log("formValuesChanging");  
     }
 
     // Send login credential data to the server and displays the result/ redirect to new page 
@@ -40,7 +39,7 @@ class login  extends Component {
         await this.setState({isLoading:true});
         //console.log(this.state);
 
-        //document.getElementById('log').innerHTML='';
+        document.getElementById('log').innerHTML='';
   
         fetch(IPADDRESS+'/admin/login',{ 
             
@@ -86,53 +85,18 @@ class login  extends Component {
         .catch(error =>{
             this.setState({isLoading:false});
          
-            console.log(error);
+            alert(error);
         })
     }
 
-    componentDidMount(){
-        console.log(this.state.isLoading);
-        {(!this.state.isLoading)?(console.log('Loading')):(console.log("error"))}
-
-    }
-
-
-    // MyVerticallyCenteredModal(props) {
-    //     return (
-    //       <Modal
-    //         {...props}
-    //         size="lg"
-    //         aria-labelledby="contained-modal-title-vcenter"
-    //         centered
-    //       >
-    //         <Modal.Header closeButton>
-    //           <Modal.Title id="contained-modal-title-vcenter">
-    //             Modal heading
-    //           </Modal.Title>
-    //         </Modal.Header>
-    //         <Modal.Body>
-    //           <h4>Centered Modal</h4>
-    //           <p>
-    //             Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-    //             dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-    //             consectetur ac, vestibulum at eros.
-    //           </p>
-    //         </Modal.Body>
-    //         <Modal.Footer>
-    //           <Button onClick={props.onHide}>Close</Button>
-    //         </Modal.Footer>
-    //       </Modal>
-    //     );
-    //   }
-      
-
+    // componentDidMount(){
+    //     console.log(this.state.isLoading);
+    //     {(!this.state.isLoading)?(console.log('Loading')):(console.log("error"))}
+    // }
 
     render()
     
     {
-        
-        
-
         return ( <div className="login_container col-lg-4">
                 
                     <Header/>
@@ -144,7 +108,7 @@ class login  extends Component {
                             Login in to your account
                         </div>
                         
-                        {("test" in this.props.location)?(<p id="log" style={{color:'lightgreen'}}>{this.props.location.test.info}</p>):(<p></p>)}
+                        {("test" in this.props.location)?(<div id="log" style={{color:'lightgreen', textAlign:'center'}}>{this.props.location.test.info}</div>):(<div id='log'></div>)}
     
                         <div id="loginStatusInfo"></div>
                         <div className="form_value">
@@ -162,18 +126,13 @@ class login  extends Component {
                                 </div> 
                                 <br/>
 
-                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Loading...{this.state.isLoading}</button>):(<Button_cls name='Login'></Button_cls>)}
+                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Loading...{this.state.isLoading}</button>):(<ButtonCls name='Login'></ButtonCls>)}
    
                             </form>
 
                                                     
                             </div>
-                    </div>
-
-
-
-
-                    
+                    </div>   
                     </div> 
                 );
             }
