@@ -8,3 +8,13 @@
     font-weight: 600;
     text-align: center;
 }
+
+#genderDisplayOption {
+    display: inline;   
+}
+
+
+input[type=radio] {
+    margin-left: 20px;
+    color: black;
+  }
