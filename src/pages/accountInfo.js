@@ -6,7 +6,7 @@ import IPADDRESS from '../components/server_ip';
 import {Button, Label, Input} from 'reactstrap';
 
 import ResponseModal from '../components/logoutModal';
-import { async } from 'q';
+
 
 class accountinfo  extends Component {
 
