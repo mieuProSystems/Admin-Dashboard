@@ -5,7 +5,7 @@ import '../CSS/forgotPassword.css';
 
 import {Input, Spinner} from 'reactstrap';
 import Header from '../components/header';
-import Button_Cls from '../components/button';
+import ButtonCls from '../components/button';
 import IPADDRESS from '../components/server_ip';
 
 class forgetPassword  extends Component {
@@ -13,7 +13,7 @@ class forgetPassword  extends Component {
     constructor(props) {
         super(props);
         this.state = {userMail:'',
-                        isLoading:false
+                      isLoading:false
                     }
     }
     //Set value of the state variable
@@ -77,7 +77,7 @@ class forgetPassword  extends Component {
                                 <label>Enter Your Registered mail:</label>
                                 <Input type="email" name='userMail' value={this.state.user_mail} placeholder="user@example.com" onChange={this.handleChange} required/><br/><br/>
                              
-                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Request password</button>):(<Button_Cls name='Request Password'/>)}
+                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Request password</button>):(<ButtonCls name='Request Password'/>)}
                             </form>
                         </div>
                     </div>
