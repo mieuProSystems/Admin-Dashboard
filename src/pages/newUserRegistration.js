@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Label, Input, Spinner} from 'reactstrap';
 import Header from '../components/header';
-import Button_Cls from '../components/button';
+import ButtonCls from '../components/button';
 
 /*import {
     FacebookLoginButton,
@@ -104,7 +104,7 @@ class newUser  extends Component {
         await this.setState({isLoading:true});
         
         const{isPasswordMatched}=this.state;
-        console.log(this.state);
+        //console.log(this.state);
         
         //console.log('In submit, Is PasswordMatched = '+isPasswordMatched);
 
@@ -137,7 +137,7 @@ class newUser  extends Component {
                 }
             })
             .catch(error =>{
-                console.log(error);
+                alert(error);
                 this.setState({isLoading:false});
             })
         
@@ -174,13 +174,13 @@ class newUser  extends Component {
                                 {/*<Input type="text" name='gender' value={this.state.gender} placeholder="Male/Female/Other" onChange={this.setFormValues} required/>
                                  */}
                                 <div onChange={this.setFormValues} >
-                                <Label>Gender</Label>
-                                <div id='genderDisplayOption'>
-        <input type="radio" name='gender' value="MALE" name="gender"/> Male 
-        <input type="radio" name='gender' value="FEMALE" name="gender"/> Female
-        <input type="radio" name='gender' value="OTHER" name="gender"/> Other
-        </div>
-      </div>
+                                    <Label>Gender</Label>
+                                    <div id='genderDisplayOption'>
+                                    <input type="radio" name='gender' value="MALE" /> Male 
+                                    <input type="radio" name='gender' value="FEMALE"/> Female
+                                    <input type="radio" name='gender' value="OTHER" /> Other
+                                    </div>
+                                </div>
 
                                 <Label>User Email</Label>      
                                 <Input type="email" name='userMail' value={this.state.user_mail} placeholder="user@example.com" onChange={this.setFormValues} required/>
@@ -198,7 +198,7 @@ class newUser  extends Component {
                                 <div id = 'passwordErrorInfo'> </div>
                                 <br/>
 
-                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Register</button>):(<Button_Cls name='Register'/>)}
+                                {(this.state.isLoading)?(<button className="btn-lg btn-block primary" disabled={true}><Spinner as="span"animation="animation" size="sm"/>Register</button>):(<ButtonCls name='Register'/>)}
                                 
                             </form>
 
