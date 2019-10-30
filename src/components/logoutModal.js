@@ -27,7 +27,8 @@ function logoutModal(props) {
       <Modal.Footer>
 
         <Button onClick={props.onHide}>Close</Button>
-        <Button onClick={props.logout}>Logout</Button>
+        {/* <Button onClick={props.logout}>Logout</Button> */}
+        {props.logoutButton}
         
 
       </Modal.Footer>
