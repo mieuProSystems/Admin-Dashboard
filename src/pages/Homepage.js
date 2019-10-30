@@ -128,8 +128,8 @@ class homepage  extends Component {
 
     redirectToLogin =async()=>{
         console.log(this.props.location);
-        this.props.history.push({pathname:'/', test:{info:'Please Login...!'}});
-        await window.location.reload();
+        await this.props.history.push({pathname:'/', test:{info:'Please Login...!'}});
+        //await window.location.reload();
 
     }
 
@@ -319,12 +319,12 @@ class homepage  extends Component {
 
             console.log(resultData);
             await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
-            await window.location.reload();
+            //await window.location.reload();
             })
         .catch(async(error) => {
             console.error(error);
             await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
-            await window.location.reload();
+            //await window.location.reload();
 
             
           });
@@ -460,8 +460,7 @@ class homepage  extends Component {
                     show={this.state.showLogoutModal}
                     onHide={() => {this.setState({showLogoutModal:false})}}
                     headerTitle={ [ <div id='modalTitle'> Logout  </div>]}
-                    description={[<div id="modalWindow"><div>  Do you want to exit from this panel? </div></div>]}
-                    logout={async()=>{// console.log(this.props.location.state.response.token); 
+                    logoutButton={[<Button onClick={async()=>{// console.log(this.props.location.state.response.token); 
                         await fetch(IPADDRESS+'/admin/logout',{
                         method: 'POST',
             headers: {
@@ -484,7 +483,10 @@ class homepage  extends Component {
                     })
                     .catch(e=>{console.log(e);})
                 
-                }}
+                }}>Logout</Button>]}
+                
+                    description={[<div id="modalWindow"><div>  Do you want to exit from this panel? </div></div>]}
+                    
                 />
                 
                 </div>

@@ -125,10 +125,10 @@ class accountinfo  extends Component {
                  
              }
              else{
-                this.setState({showModal:true});
+                //this.setState({showModal:true});
              
-                document.getElementById("modalWindow").innerHTML=resultData['description'];
-                document.getElementById("modalWindow").style.color='red';
+                document.getElementById("newPasswordErrorInfo").innerHTML=resultData['description'];
+                document.getElementById("newPasswordErrorInfo").style.color='red';
                  
                 
 
@@ -200,9 +200,9 @@ class accountinfo  extends Component {
             <div id="newPasswordFormDiv" style={{display:'none'}}>
             <form onSubmit={this.handleNewPasswordCredentials}>
             <Label>Enter New Password: </Label>
-            <Input type="password" name='newPassword' value={this.state.newPassword} pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" placeholder="Enter Old Password" onChange={this.setFormValues} required/>
+            <Input type="password" name='newPassword' value={this.state.newPassword} pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" placeholder="Enter New Password" onChange={this.setFormValues} required/>
             <br/>
-            
+            <div id="newPasswordErrorInfo"></div>
             <center><Button type="submit" className="btn btn-block" id="changePasswordButton">Change Password</Button></center>
             </form>
             </div>

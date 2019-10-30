@@ -170,9 +170,18 @@ class newUser  extends Component {
                                 <Label>Last Name </Label>
                                 <Input type="text" name='lastName' value={this.state.lastName} placeholder="Smith" onChange={this.setFormValues} required/>
                                 
+                                 
+                                {/*<Input type="text" name='gender' value={this.state.gender} placeholder="Male/Female/Other" onChange={this.setFormValues} required/>
+                                 */}
+                                <div onChange={this.setFormValues} >
                                 <Label>Gender</Label>
-                                <Input type="text" name='gender' value={this.state.gender} placeholder="Male/Female/Other" onChange={this.setFormValues} required/>
-                                
+                                <div id='genderDisplayOption'>
+        <input type="radio" name='gender' value="MALE" name="gender"/> Male 
+        <input type="radio" name='gender' value="FEMALE" name="gender"/> Female
+        <input type="radio" name='gender' value="OTHER" name="gender"/> Other
+        </div>
+      </div>
+
                                 <Label>User Email</Label>      
                                 <Input type="email" name='userMail' value={this.state.user_mail} placeholder="user@example.com" onChange={this.setFormValues} required/>
     
