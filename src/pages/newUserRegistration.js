@@ -176,7 +176,7 @@ class newUser  extends Component {
                                 <div onChange={this.setFormValues} >
                                     <Label>Gender</Label>
                                     <div id='genderDisplayOption'>
-                                    <input type="radio" name='gender' value="MALE" /> Male 
+                                    <input type="radio" name='gender' value="MALE" required/> Male 
                                     <input type="radio" name='gender' value="FEMALE"/> Female
                                     <input type="radio" name='gender' value="OTHER" /> Other
                                     </div>
