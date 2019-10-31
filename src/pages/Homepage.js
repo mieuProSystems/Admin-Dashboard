@@ -11,8 +11,7 @@ import LogoutModal from '../components/logoutModal';
 import AccountInfo from '../pages/accountInfo';
 import Notifications from '../pages/notification';
 import ManageUsers from '../pages/manageUser';
-import { async } from 'q';
-import notification from '../pages/notification';
+
 
 
 class homepage  extends Component {
@@ -372,7 +371,7 @@ class homepage  extends Component {
                         <div className="menu " onClick={(event) => {this.menuNavigation("accountInfo", event)}} >My Profile</div>
                         <div className="menu active" onClick={(event) => {this.menuNavigation("manageUsers", event)}}>Manage Accounts</div>
                         <div className="menu" onClick={(event) => {this.menuNavigation("manageVideos", event)}}>Manage Videos</div>
-                        <div className="menu " onClick={(event) => {this.menuNavigation("notifications", event)}}>Notifications ({this.state.notificationCount})</div>
+                        <div className="menu " onClick={(event) => {this.menuNavigation("notifications", event)}}>Notifications {(this.state.notificationCount===0)?(<div></div>):(<div>{this.state.notificationCount}</div>)}</div>
                         {/*<div className="menu" >Google Admob</div>*/}
                         
                         <div className="menu" onClick={(event) => {this.menuNavigation("logHistory", event)}}>Log History</div>
