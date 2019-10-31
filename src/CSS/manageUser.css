@@ -1,0 +1,33 @@
+.horizontalTab{
+    display: flex; 
+}
+.horizontalMenu{
+    background-color: #fff;
+    font-size: 20px;
+    color:black;
+    width: 100%;
+    text-align: center;
+    
+    border: 2px solid #ccc; 
+     
+    border-bottom-width: 0px; 
+}
+
+.horizontalMenu:hover{
+    cursor: pointer;
+    background-color:#ccc;
+    
+    
+}
+
+.horizontalMenu.active{
+    background-color:#2c3e50;
+    font-size: 20px;
+    color:white;
+    width: 100%;
+    text-align: center;
+    /* box-shadow: 0px 10px 20px 0px rgba(0,0,0,0.3);  */
+    border-bottom-width: 0px;
+
+}
+
