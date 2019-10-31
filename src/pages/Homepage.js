@@ -10,6 +10,10 @@ import LogoutModal from '../components/logoutModal';
 
 import AccountInfo from '../pages/accountInfo';
 import Notifications from '../pages/notification';
+import ManageUsers from '../pages/manageUser';
+import { async } from 'q';
+import notification from '../pages/notification';
+
 
 class homepage  extends Component {
 
@@ -82,7 +86,16 @@ class homepage  extends Component {
                 })
             .catch((error) => {
                 alert(error);
-            });   
+            }); 
+         //Notification   
+        fetch(IPADDRESS+'/home/admin/getFeedback')
+        .then(response=>response.json())
+        .then(async(resultData)=>{
+            console.log(resultData);
+            await this.setState({notificationCount:resultData.length});
+            await this.setState({notifications:resultData});
+
+        })
     }
 
     
@@ -102,7 +115,9 @@ class homepage  extends Component {
                     description:'',
                     selectedVideosCount:'0',
                     selectAllBoxChecked:false,
-                    showLogoutModal:false
+                    showLogoutModal:false,
+                    notificationCount:0,
+                    notifications:'false'
 
                     }
                     
@@ -123,6 +138,7 @@ class homepage  extends Component {
     redirectToLogin =async()=>{
         //console.log(this.props.location);
         await this.props.history.push({pathname:'/', test:{info:'Please Login...!'}});
+        window.location.reload();
     }
 
     //Set Query Value
@@ -348,15 +364,15 @@ class homepage  extends Component {
             
             (this.props.location.state===undefined)?(<div>{this.redirectToLogin()}</div>):(
             <div className='container-fluid' style={{ display:'inline-flex', height:'100vh', width:'100%'}}>
-                <div className= 'col-lg-2 menuPanel'> 
+                <div className= 'col-lg-2 menuPanel' style={{}}> 
 
                     <div className='vertical-menu'>
                     
-                        <div className="menu active" onClick={(event) => {this.menuNavigation("home", event)}} >Home</div>
-                        <div className="menu " onClick={(event) => {this.menuNavigation("accountInfo", event)}} >Account Information</div>
-                        <div className="menu" onClick={(event) => {this.menuNavigation("manageUsers", event)}}>Manage Users</div>
+                        <div className="menu " onClick={(event) => {this.menuNavigation("home", event)}} >Home</div>
+                        <div className="menu " onClick={(event) => {this.menuNavigation("accountInfo", event)}} >My Profile</div>
+                        <div className="menu active" onClick={(event) => {this.menuNavigation("manageUsers", event)}}>Manage Accounts</div>
                         <div className="menu" onClick={(event) => {this.menuNavigation("manageVideos", event)}}>Manage Videos</div>
-                        <div className="menu " onClick={(event) => {this.menuNavigation("notifications", event)}}>Notifications</div>
+                        <div className="menu " onClick={(event) => {this.menuNavigation("notifications", event)}}>Notifications ({this.state.notificationCount})</div>
                         {/*<div className="menu" >Google Admob</div>*/}
                         
                         <div className="menu" onClick={(event) => {this.menuNavigation("logHistory", event)}}>Log History</div>
@@ -374,20 +390,21 @@ class homepage  extends Component {
 
                 
                 
-               <div className='videoPanel col-lg-7'   style={{marginTop:'0px',backgroundColor:'white', transition:'0.5s'}}>
+               <div className='videoPanel col-lg-7'   style={{marginTop:'0px',backgroundColor:'#fff', transition:'0.5s'}}>
                 
-                <div id='home' className='tabcontent'><center><h2>Welcome!</h2></center></div>
+                <div id='home'  style={{display:'none'}} className='tabcontent'><center><h2>Welcome!</h2></center></div>
 
                 <div id="accountInfo"  style={{display:'none'}} className="tabcontent">
                 <AccountInfo token={this.props.location.state.response.token}/>
                 </div>
 
-                <div id="manageUsers" style={{display:'none'}} className="tabcontent">
-                <h1>User Info</h1>
+                <div id="manageUsers" className="tabcontent">
+                <ManageUsers/>
                 </div>
                 
                 <div id="manageVideos" style={{display:'none'}} className="tabcontent">
-                <h1>Manage Videos</h1>
+                
+            
                 </div>
 
                 <div id="notifications" style={{display:'none'}} className="tabcontent">
