@@ -28,7 +28,7 @@ class accountinfo  extends Component {
         .then(async(resultData)=>{
 
             await this.setState({firstName:resultData['firstName'], lastName:resultData['lastName'], gender:resultData['gender'], userMail:resultData['userMail'], mobileNo:resultData['mobileNo']});
-            console.log(resultData['firstName']);
+            console.log(resultData);
         })
         .catch((error)=>{
             console.log("error");
@@ -145,41 +145,41 @@ class accountinfo  extends Component {
 
                     <table className="table table-striped">
                   <thead>
-                  <tr>
-                    <th>First Name</th>
-                    <th>{this.state.firstName}</th>
+                  <tr className='d-flex'>
+                    <th className="col-lg-3">First Name</th>
+                    <th className="col-lg-9">{this.state.firstName}</th>
                     </tr>
                    </thead>
                    <thead>
-                  <tr>
-                    <th>Last Name</th>
-                    <th>{this.state.lastName}</th>
+                  <tr className='d-flex'>
+                    <th className="col-lg-3">Last Name</th>
+                    <th className="col-lg-9">{this.state.lastName}</th>
                     </tr>
                    </thead>
                    <thead>
-                  <tr>
-                    <th>Gender</th>
-                    <th>{this.state.gender}</th>
+                  <tr className='d-flex'>
+                    <th className="col-lg-3">Gender</th>
+                    <th className="col-lg-9">{this.state.gender}</th>
                     </tr>
                    </thead>
 
                    <thead>
-                  <tr>
-                    <th>Mail Id</th>
-                    <th>{this.state.userMail}</th>
+                  <tr className='d-flex'>
+                    <th className="col-lg-3">Mail Id</th>
+                    <th className="col-lg-9">{this.state.userMail}</th>
                     </tr>
                    </thead>
                    <thead>
-                  <tr>
-                    <th>Mobile No</th>
-                    <th>{this.state.mobileNo}</th>
+                  <tr className='d-flex'>
+                    <th className="col-lg-3">Mobile No</th>
+                    <th className="col-lg-9">{this.state.mobileNo}</th>
                     </tr>
                    </thead>  
                 
                    <thead>
-                   <tr>
-                    <th>Password</th>
-                    <th>***************<Button id="changePassword" onClick={this.openForm}>Change Password</Button></th>
+                   <tr className='d-flex'>
+                    <th className="col-lg-3">Password</th>
+                    <th className="col-lg-9">***************<Button id="changePassword" onClick={this.openForm}>Change Password</Button></th>
                     
                     </tr>
                    </thead>               
