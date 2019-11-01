@@ -14,7 +14,7 @@ class accountinfo  extends Component {
     componentDidMount(){
         //console.log("Hai---------------------");
 
-        fetch(IPADDRESS +'/home/accountInformation/getAdminDetails',{ 
+        fetch(IPADDRESS +'/home/myProfile/getDetails',{ 
 
             method: 'POST',
             headers: {
