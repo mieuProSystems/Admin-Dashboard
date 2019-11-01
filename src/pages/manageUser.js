@@ -88,19 +88,12 @@ class manageUsers extends Component {
     
     removeAdminAccount =(e)=>{
         console.log(e.target.getAttribute('userMail'));
-        var adminData = this.state.adminData;
-
+        
 
         let confirm=window.confirm("Do you want to remove this admin account?");
         if(confirm){
 
-            
-        adminData.map(async(data, index)=>{
-            if(data.userMail === e.target.getAttribute('userMail') ){
-                delete adminData[index];
-                await this.setState({adminData:adminData});
-            }
-        });
+           
 
         fetch(IPADDRESS+'/home/admin/removeAdmin',{
             
@@ -114,12 +107,21 @@ class manageUsers extends Component {
         .then(response=> response.json())
         .then(async(resultData)=>{
             console.log(resultData);
-
+            var adminData = this.state.adminData;
+  
             await this.setState({showModal:true})
             document.getElementById('modalWindow').innerHTML=resultData['description'];
 
             if(resultData['status']==='success'){
-                document.getElementById('modalWindow').style.color="green";
+                 
+            await adminData.map(async(data, index)=>{
+                if(data.userMail === e.target.getAttribute('userMail') ){
+                    delete adminData[index];
+                    await this.setState({adminData:adminData});
+                }
+            });
+
+            document.getElementById('modalWindow').style.color="green";
  
             }
             else{
