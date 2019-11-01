@@ -11,6 +11,7 @@ import LogoutModal from '../components/logoutModal';
 import AccountInfo from '../pages/accountInfo';
 import Notifications from '../pages/notification';
 import ManageUsers from '../pages/manageUser';
+import { async } from 'q';
 
 
 
@@ -91,9 +92,14 @@ class homepage  extends Component {
         .then(response=>response.json())
         .then(async(resultData)=>{
             console.log(resultData);
-            await this.setState({notificationCount:resultData.length});
+            var notificationCount =0
+           await resultData.map((data)=>{
+                if(data.read === false){
+                    notificationCount ++;
+                }
+            })
+            await this.setState({notificationCount:notificationCount});
             await this.setState({notifications:resultData});
-
         })
     }
 
@@ -116,7 +122,8 @@ class homepage  extends Component {
                     selectAllBoxChecked:false,
                     showLogoutModal:false,
                     notificationCount:0,
-                    notifications:'false'
+                    notifications:'false',
+                    notificationClickCount:0
 
                     }
                     
@@ -126,8 +133,8 @@ class homepage  extends Component {
     componentWillMount(){
         setInterval(function(){
             this.setState({
-                currentTime: new Date().toLocaleTimeString("en-US", {timeZone: "Asia/kolkata"}),
-                currentDate: new Date().toLocaleDateString("en-US", {timeZone: "Asia/kolkata"})
+                currentTime: new Date().toLocaleTimeString("en-IN", {timeZone: "Asia/kolkata"}),
+                currentDate: new Date().toLocaleDateString("en-IN", {timeZone: "Asia/kolkata"})
             
             })
         }.bind(this), 1000);
@@ -340,7 +347,17 @@ class homepage  extends Component {
 
 
 // Vertical Navigation
-   menuNavigation=(parameter, event)=>{
+   menuNavigation=async(parameter, event)=>{
+
+    
+    if(this.state.notificationClickCount===1){
+        await this.setState({notificationClickCount:this.state.notificationClickCount+1});
+    }
+
+    if(parameter ==='notifications'){
+        await this.setState({notificationClickCount:this.state.notificationClickCount+1});
+    }
+
 
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
@@ -354,6 +371,37 @@ class homepage  extends Component {
         }
         document.getElementById(parameter).style.display = "block";
         event.currentTarget.className += " active";
+
+
+            if(this.state.notificationClickCount ===2){
+            await fetch(IPADDRESS+'/home/admin/readFeedback')
+            .then(response=> response.json())
+            .then(async(resultData)=>{
+                console.log(resultData);
+                await this.setState({notificationCount:0});
+
+                var feedback = this.state.notifications;
+
+                await feedback.map((feedback, index)=>{
+                    if (feedback.read ===false){
+                        feedback.read=true
+                    }
+                    
+                });
+
+                await this.setState({
+                    notifications:feedback
+                });
+
+            })
+            .catch((error)=>{
+                alert(error);
+            })
+
+        }
+
+            
+        
     }
   
   
@@ -367,9 +415,9 @@ class homepage  extends Component {
 
                     <div className='vertical-menu'>
                     
-                        <div className="menu " onClick={(event) => {this.menuNavigation("home", event)}} >Home</div>
+                        <div className="menu active" onClick={(event) => {this.menuNavigation("home", event)}} >Home</div>
                         <div className="menu " onClick={(event) => {this.menuNavigation("accountInfo", event)}} >My Profile</div>
-                        <div className="menu active" onClick={(event) => {this.menuNavigation("manageUsers", event)}}>Manage Accounts</div>
+                        <div className="menu " onClick={(event) => {this.menuNavigation("manageUsers", event)}}>Manage Accounts</div>
                         <div className="menu" onClick={(event) => {this.menuNavigation("manageVideos", event)}}>Manage Videos</div>
                         <div className="menu " onClick={(event) => {this.menuNavigation("notifications", event)}}>Notifications {(this.state.notificationCount===0)?(<div></div>):(<div>{this.state.notificationCount}</div>)}</div>
                         {/*<div className="menu" >Google Admob</div>*/}
@@ -391,27 +439,26 @@ class homepage  extends Component {
                 
                <div className='videoPanel col-lg-7'   style={{marginTop:'0px',backgroundColor:'#fff', transition:'0.5s'}}>
                 
-                <div id='home'  style={{display:'none'}} className='tabcontent'><center><h2>Welcome!</h2></center></div>
+                <div id='home' className='tabcontent'><center><h2>Welcome!</h2></center></div>
 
                 <div id="accountInfo"  style={{display:'none'}} className="tabcontent">
                 <AccountInfo token={this.props.location.state.response.token}/>
                 </div>
 
-                <div id="manageUsers" className="tabcontent">
+                <div id="manageUsers" style={{display:'none'}} className="tabcontent">
                 <ManageUsers/>
                 </div>
                 
                 <div id="manageVideos" style={{display:'none'}} className="tabcontent">
-                
-            
+                <h2>Manage Videos <i>Not yet completed</i></h2>
                 </div>
 
                 <div id="notifications" style={{display:'none'}} className="tabcontent">
-                <Notifications/>
+                <Notifications feedback={this.state.notifications} unreadFeedbackCount={this.state.notificationCount}/>
                 </div>
 
                 <div id="logHistory" style={{display:'none'}} className="tabcontent">
-                <h1>Log History</h1>
+                <h2>Log History <i>Not yet completed</i></h2>
                 </div>
 
                 <div id="logout" style={{display:'none'}} className="tabcontent">
