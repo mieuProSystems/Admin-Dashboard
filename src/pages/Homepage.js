@@ -11,7 +11,9 @@ import LogoutModal from '../components/logoutModal';
 import AccountInfo from '../pages/accountInfo';
 import Notifications from '../pages/notification';
 import ManageUsers from '../pages/manageUser';
-import { async } from 'q';
+import LogHistory from '../pages/logHistory';
+import ManageVideos from '../pages/manageVideos';
+
 
 
 
@@ -26,7 +28,9 @@ class homepage  extends Component {
             //Fetching Channel Videos 
             fetch(IPADDRESS+'/home/getVideos')
             .then(response => response.json())
-            .then(resultData =>{
+            .then(async(resultData) =>{
+
+                await this.setState({channels:resultData});
 
                 resultData.map(async(resultData, index)=>{ 
 
@@ -101,6 +105,7 @@ class homepage  extends Component {
             await this.setState({notificationCount:notificationCount});
             await this.setState({notifications:resultData});
         })
+
     }
 
     
@@ -123,7 +128,8 @@ class homepage  extends Component {
                     showLogoutModal:false,
                     notificationCount:0,
                     notifications:'false',
-                    notificationClickCount:0
+                    notificationClickCount:0, 
+                    channels:false
 
                     }
                     
@@ -404,6 +410,23 @@ class homepage  extends Component {
         
     }
   
+
+    reduceNotificationCount = async(index, replyMessage)=>{
+        
+        await this.setState({notificationCount:this.state.notificationCount - Number(1)});
+
+        var notification = this.state.notifications;
+        notification[index].read=true;
+        notification[index].isReplied=true;
+        notification[index].repliedMessage= replyMessage;
+
+        await this.setState({notifications:notification});
+        console.log(this.state.notifications[index]);
+
+
+
+    }
+
   
 
     render() {  
@@ -450,15 +473,15 @@ class homepage  extends Component {
                 </div>
                 
                 <div id="manageVideos" style={{display:'none'}} className="tabcontent">
-                <h2>Manage Videos <i>Not yet completed</i></h2>
+                <ManageVideos channels={this.state.channels}/>
                 </div>
 
                 <div id="notifications" style={{display:'none'}} className="tabcontent">
-                <Notifications feedback={this.state.notifications} unreadFeedbackCount={this.state.notificationCount}/>
+                <Notifications feedback={this.state.notifications} unreadFeedbackCount={this.state.notificationCount} reduceFunction = {this.reduceNotificationCount}/>
                 </div>
 
                 <div id="logHistory" style={{display:'none'}} className="tabcontent">
-                <h2>Log History <i>Not yet completed</i></h2>
+                <LogHistory/>
                 </div>
 
                 <div id="logout" style={{display:'none'}} className="tabcontent">
