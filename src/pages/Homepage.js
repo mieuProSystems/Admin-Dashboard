@@ -31,6 +31,7 @@ class homepage  extends Component {
             .then(async(resultData) =>{
 
                 await this.setState({channels:resultData});
+                //await console.log(this.state.channels );
 
                 resultData.map(async(resultData, index)=>{ 
 
@@ -129,22 +130,22 @@ class homepage  extends Component {
                     notificationCount:0,
                     notifications:'false',
                     notificationClickCount:0, 
-                    channels:false
+                    
 
                     }
                     
                 }
                 
     //Fetching Current Date and Time
-    componentWillMount(){
-        setInterval(function(){
-            this.setState({
-                currentTime: new Date().toLocaleTimeString("en-IN", {timeZone: "Asia/kolkata"}),
-                currentDate: new Date().toLocaleDateString("en-IN", {timeZone: "Asia/kolkata"})
+    // componentWillMount(){
+    //     setInterval(function(){
+    //         this.setState({
+    //             currentTime: new Date().toLocaleTimeString("en-IN", {timeZone: "Asia/kolkata"}),
+    //             currentDate: new Date().toLocaleDateString("en-IN", {timeZone: "Asia/kolkata"})
             
-            })
-        }.bind(this), 1000);
-    }
+    //         })
+    //     }.bind(this), 1000);
+    // }
 
     //Redirect to home page while direct access URL
     redirectToLogin =async()=>{
@@ -473,7 +474,7 @@ class homepage  extends Component {
                 </div>
                 
                 <div id="manageVideos" style={{display:'none'}} className="tabcontent">
-                <ManageVideos channels={this.state.channels}/>
+                <ManageVideos/>
                 </div>
 
                 <div id="notifications" style={{display:'none'}} className="tabcontent">
