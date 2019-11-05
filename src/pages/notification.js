@@ -32,6 +32,8 @@ class notification extends Component {
     }
 
     converTime = (time) => {
+        
+        
         let hour = (time.split(':'))[0]
         let min = (time.split(':'))[1]
         // let sec = (time.split(':'))[2]
