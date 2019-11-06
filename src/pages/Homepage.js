@@ -187,6 +187,7 @@ class homepage  extends Component {
             })
           .then(()=>{ document.getElementById('searchResults').innerHTML='';
                         //console.log(this.state);
+
                         this.state.resultChannelData['items'].map(this.createChannelList)
             })
           .catch((error) => {
@@ -302,6 +303,8 @@ class homepage  extends Component {
      addVideosIntoDB = ()=>{
         this.setState({showModal:false});
         //console.log(this.state);
+
+        if(this.state.videoIds.length !== 0){
      
         fetch(IPADDRESS+'/home/add/channelVideos',{ 
             method: 'POST',
@@ -325,6 +328,10 @@ class homepage  extends Component {
             await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[]});
             await window.location.reload();  
           }); 
+        }
+        else{
+            alert("No Videos Selected");
+        }
         }
 
 
@@ -412,6 +419,23 @@ class homepage  extends Component {
     }
   
 
+    openSideMenu = ()=>{
+        document.getElementById("menu").style.width = "250px";
+  document.getElementById("videoPanel").style.marginLeft = "250px";
+
+  console.log(document.getElementById("searchPanel").style.width);
+   if(document.getElementById("searchPanel").style.width==='200px'){
+     {this.closeSearchPanel()}
+ }
+ // document.getElementById("videoPanel").style.backgroundColor = "rgba(0,0,0,0.4)";
+    }
+
+    closeSideMenu = ()=>{
+    document.getElementById("menu").style.width = "0px";
+  document.getElementById("videoPanel").style.marginLeft = "0px";
+ // document.getElementById("videoPanel").style.backgroundColor = "white";
+    }
+
     reduceNotificationCount = async(index, replyMessage)=>{
         
         await this.setState({notificationCount:this.state.notificationCount - Number(1)});
@@ -428,17 +452,35 @@ class homepage  extends Component {
 
     }
 
+    openSearchPanel=()=>{
+        console.log("clicked");
+        document.getElementById('searchPanel').style.width='200px'; 
+        document.getElementById('searchForm').style.visibility='visible';  
+        document.getElementById('videoPanel').style.width='80%'; 
+        //console.log(document.getElementById("menu").style.width);
+        if(document.getElementById("menu").style.width==='250px'){
+            {this.closeSideMenu()}
+        }               
+    }
+
+    closeSearchPanel=()=>{
+        document.getElementById('searchPanel').style.width='0px';
+        document.getElementById('searchForm').style.visibility='hidden';
+        document.getElementById('videoPanel').style.width='100%';
+    }
   
 
     render() {  
         return ( 
             
             (this.props.location.state===undefined)?(<div>{this.redirectToLogin()}</div>):(
-            <div className='container-fluid' style={{ display:'inline-flex', height:'100vh', width:'100%'}}>
-                <div className= 'col-lg-2 menuPanel' style={{}}> 
+            <div className='container-fluid' style={{ display:'inline-flex', height:'100vh', width:'100vw'}}>
+
+                
+                <div className= 'menuPanel' id='menu'> 
 
                     <div className='vertical-menu'>
-                    
+                        <div href="javascript:void(0)" className="closebtn" onClick={()=>{this.closeSideMenu()}}>&times;</div>
                         <div className="menu active" onClick={(event) => {this.menuNavigation("home", event)}} >Home</div>
                         <div className="menu " onClick={(event) => {this.menuNavigation("accountInfo", event)}} >My Profile</div>
                         <div className="menu " onClick={(event) => {this.menuNavigation("manageUsers", event)}}>Manage Accounts</div>
@@ -451,19 +493,32 @@ class homepage  extends Component {
                     
                     </div>
 
-
+{/* 
                     <div className='dateAndTime'>
                         <span>Date: {this.state.currentDate} (MM/DD/YYYY)</span><br/>
                         <span>Time: {this.state.currentTime} </span>
-                    </div>
+                    </div> */}
 
                 </div> 
 
                 
                 
-               <div className='videoPanel col-lg-7'   style={{marginTop:'0px',backgroundColor:'#fff', transition:'0.5s'}}>
+               <div className='videoPanel' id="videoPanel"   style={{marginTop:'0px',backgroundColor:'#fff', transition:'0.5s', width:'100%'}}>
+                   <div style={{display:'flex', width:'100%'}}>
+               <span style={{fontSize:'30px',cursor:'pointer'}} onClick={()=>{this.openSideMenu()}}>&#9776;Menu</span>
+               <div style={{margin:'0px 0px 0px auto', cursor:'pointer'}} onClick={()=>{this.openSearchPanel()}}>
+                   <h3>Explore Channels&#128269;</h3>
+               {/* <form className='searchForm' onSubmit={this.getYoutubeChannelList}>
+                    <h4 style={{color:'black'}}>What are you looking for...?</h4>
+                    <input type='text' name='query' placeholder='Enter Channel Name' onChange={this.handleQueryValueChange} value={this.state.query} required/>
+                    <button type='submit' className='btn-primary' >Search</button>
+                    </form>*/}
+                    </div> 
+                    </div>
                 
-                <div id='home' className='tabcontent'><center><h2>Welcome!</h2></center></div>
+                <div id='home' className='tabcontent'>
+                    {/* <center><h2>Welcome!</h2></center> */}
+                    </div> 
 
                 <div id="accountInfo"  style={{display:'none'}} className="tabcontent">
                 <AccountInfo token={this.props.location.state.response.token}/>
@@ -526,15 +581,22 @@ class homepage  extends Component {
             
                 </div> 
 
-                <div className='searchPanel col-lg-3' style={{ marginTop:'0px'}}>
-                    <form className='searchForm' onSubmit={this.getYoutubeChannelList}>
-                    <h4 style={{color:'white'}}>What are you looking for...?</h4>
+                <div className='searchPanel' id='searchPanel' style={{ marginTop:'20px', width:'0px'}}>
+                 <form className='searchForm' id='searchForm' onSubmit={this.getYoutubeChannelList}>
+                     <div><div className="closebtn" style={{marginBottom:'20px',color:'#fff'}} onClick={()=>{this.closeSearchPanel()}}>&times;</div></div>
+                 
+                    
+                    {/* <h4 style={{color:'white'}}>What are you looking for...?</h4> */}
+                    <div style={{marginTop:'50px', padding:'10px'}}>
                     <input type='text' name='query' placeholder='Enter Channel Name' onChange={this.handleQueryValueChange} value={this.state.query} required/>
-                    <button type='submit' className='btn-primary' >Search</button>
+                    
+                    <button type='submit' style={{marginTop:'10px'}} className='btn-primary' >Search</button>
+                    </div>
                     </form>
-
+                    
                     <div id="searchResults">
                     </div>
+                    
 
 
         <ChannelModal
