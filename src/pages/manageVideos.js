@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import IPADDRESS from '../components/server_ip';
 
 import '../CSS/manageVideos.css';
-import { async } from 'q';
+import ManageVideosModal from '../components/manageVideosModal';
 
 
 
@@ -10,7 +10,8 @@ class manageVideos extends Component {
     constructor(props) {
         super(props);
         this.state = { channels:false,
-                        isHovering:false }
+                        isHovering:false,
+                        showModal:false }
     }
 
  componentDidMount(){
@@ -80,23 +81,32 @@ class manageVideos extends Component {
 
 
     showChannelVideos = (e)=>{
+
+        this.setState({showModal:true});
         let channelIndex = e.target.getAttribute('channelIndex');
         let channels = document.getElementsByClassName('channelVideosInManage');
 
         if(document.getElementById('channel'+channelIndex+'VideosInManage').style.display==='grid'){
             document.getElementById('channel'+channelIndex+'VideosInManage').style.display='none'; 
+
         }
         else{
 
             for (let i=0; i<channels.length;i++){
                 document.getElementById('channel'+i+'VideosInManage').style.display='none';
+
             }
             
-            document.getElementById('channel'+channelIndex+'VideosInManage').style.display='grid';    
-        }  
+            document.getElementById('channel'+channelIndex+'VideosInManage').style.display='grid';
+           
+            
+        } 
+
     }
 
     showDeleteButton = (e)=>{
+
+        
 
         let deleteButtonIndex = e.target.getAttribute('channelIndex');
 
@@ -155,24 +165,24 @@ class manageVideos extends Component {
     }
 
 
-    showVideoButtons = (e)=>{
-        let videoId = e.target.getAttribute('videoId');
-        console.log(videoId);
+    // showVideoButtons = (e)=>{
+    //     let videoId = e.target.getAttribute('videoId');
+    //     console.log(videoId);
 
-        console.log(document.getElementById('videoButtonsDiv'+videoId));
+    //     console.log(document.getElementById('videoButtonsDiv'+videoId));
 
-        document.getElementById('videoButtonsDiv'+videoId).style.display='block';
-    }
+    //     document.getElementById('videoButtonsDiv'+videoId).style.display='block';
+    // }
 
-    hideVideoButtons = (e)=>{
-        let videosList = document.getElementsByClassName('videoButtonsDiv');
-        for (let i=0;i<videosList.length;i++){
-            if(document.getElementsByClassName('videoButtonsDiv')[i].style.display==='block'){
-            document.getElementsByClassName('videoButtonsDiv')[i].style.display='none';
-            //console.log(i);
-            }
-        }
-    }
+    // hideVideoButtons = (e)=>{
+    //     let videosList = document.getElementsByClassName('videoButtonsDiv');
+    //     for (let i=0;i<videosList.length;i++){
+    //         if(document.getElementsByClassName('videoButtonsDiv')[i].style.display==='block'){
+    //         document.getElementsByClassName('videoButtonsDiv')[i].style.display='none';
+    //         //console.log(i);
+    //         }
+    //     }
+    // }
 
 
     // onMouseLeave={(e)=>{this.hideVideoButtons(e)}} onMouseEnter={(e)=>{this.showVideoButtons(e)}}
@@ -186,7 +196,7 @@ class manageVideos extends Component {
                     return (
                         <div className='channelContentInManage'>
 
-                                <div className='channelNamesInManage' channelIndex={index} onMouseEnter={(e)=>{this.showDeleteButton(e)}} onMouseLeave={(e)=>{this.hideDeleteButton(e)}} onClick ={(e)=>{this.showChannelVideos(e)}}>
+                                <div className='channelNamesInManage' id={'channelNamesInManage'+index} channelIndex={index} onMouseEnter={(e)=>{this.showDeleteButton(e)}} onMouseLeave={(e)=>{this.hideDeleteButton(e)}} onClick ={(e)=>{this.showChannelVideos(e)}}>
                                     {channels.channelName}                         
             
                                     <button style ={{display:'none'}}className='deleteButton' id={'deleteButton'+index} channelId ={channels.channelId} channelName={channels.channelName}  onClick={(e)=>{this.deleteChannel(e)}}>Delete Channel</button>
@@ -194,7 +204,9 @@ class manageVideos extends Component {
                                 </div>
 
 
-                                <div className="channelVideosInManage" id= {'channel'+index+'VideosInManage'}>
+        
+        
+                                  <div className="channelVideosInManage" id= {'channel'+index+'VideosInManage'}>
                                     {channels['videoIds'].map((videoId, videoIndex)=>{
                                         return(
                                             <div className="videoDivInManage">
@@ -203,18 +215,24 @@ class manageVideos extends Component {
                                                 <img src= {channels['videoThumbnails'][videoIndex]} width='40%' />
                                             </div>
                                             <div className='videoButtonsDiv' id={"videoButtonsDiv"+videoId}>
-                                                <button className="videoButton" videoId = {videoId} channelId={channels['channelId']} videoTitle={channels['videoTitles'][videoIndex]} videoThumbnail={channels['videoThumbnails'][videoIndex]} onClick={(e)=>{this.playVideo(e)}}>Play</button>
+                                                {/* <button className="videoButton" videoId = {videoId} channelId={channels['channelId']} videoTitle={channels['videoTitles'][videoIndex]} videoThumbnail={channels['videoThumbnails'][videoIndex]} onClick={(e)=>{this.playVideo(e)}}>Play</button> */}
                                                 <button className="videoButton" videoId = {videoId} channelId={channels['channelId']} videoTitle={channels['videoTitles'][videoIndex]} videoThumbnail={channels['videoThumbnails'][videoIndex]} onClick={(e)=>{this.deleteVideo(e)}}>Delete</button>
                                             </div>
                                             </div>
                                         );
                                     })}
-                                </div>
+                                </div>  
                         </div>    
                     );
                 })}
 
             </div>)}
+
+
+          <div>
+
+          
+          </div>
 
         </div> );
     }
