@@ -437,8 +437,9 @@ class homepage  extends Component {
     }
 
     reduceNotificationCount = async(index, replyMessage)=>{
-        
+        if(this.state.notificationCount>0){
         await this.setState({notificationCount:this.state.notificationCount - Number(1)});
+        }
 
         var notification = this.state.notifications;
         notification[index].read=true;
