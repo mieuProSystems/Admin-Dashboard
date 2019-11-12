@@ -88,7 +88,7 @@ class manageUsers extends Component {
     
     removeAdminAccount =(e)=>{
         console.log(e.target.getAttribute('userMail'));
-        
+        var userMail=e.target.getAttribute('userMail');
 
         let confirm=window.confirm("Do you want to remove this admin account?");
         if(confirm){
@@ -106,16 +106,18 @@ class manageUsers extends Component {
         })
         .then(response=> response.json())
         .then(async(resultData)=>{
-            console.log(resultData);
+            //console.log(resultData);
             var adminData = this.state.adminData;
   
             await this.setState({showModal:true})
             document.getElementById('modalWindow').innerHTML=resultData['description'];
 
             if(resultData['status']==='success'){
-                 
+                //console.log(e.target.getAttribute('userMail'));
+                      
             await adminData.map(async(data, index)=>{
-                if(data.userMail === e.target.getAttribute('userMail') ){
+                if(data.userMail === userMail ){
+                    //console.log(index, adminData[index],userMail);
                     delete adminData[index];
                     await this.setState({adminData:adminData});
                 }
