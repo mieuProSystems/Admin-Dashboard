@@ -34,19 +34,18 @@ class manageVideos extends Component {
             
             'Content-Type': 'application/json',    
         },
-         body:JSON.stringify({channelId:channelId, videoIds:videoId, videoTitles:videoTitle, videoThumbnails:videoThumbnail })
-
+         body:JSON.stringify({channelId:channelId,
+                            videoIds:videoId, 
+                            videoTitles:videoTitle, 
+                            videoThumbnails:videoThumbnail 
+                        })
      })
      .then(response => response.json())
      .then(async(resultData)=>{
-         console.log(resultData);
-
+         //console.log(resultData);
          if(resultData['status']==='success'){
-
-            alert(resultData['description']);
-
+            //alert(resultData['description']);
             var delData=this.state.channels;
-
             delData.map((deleteData, index)=>{
                 if(deleteData['channelId']=== channelId){
                     deleteData['videoIds'].map((videoIds, index)=>{
@@ -59,69 +58,51 @@ class manageVideos extends Component {
                     })
                 }
             })
-
             await this.setState({channels:delData});
          }
          else{
              alert(resultData['description']);
          }
-
-
      })
      .catch((error)=>{
          alert(error);
-     }
-     )
+     })
+}
+
+
+playVideo =(e)=>{
+    window.open('https://www.youtube.com/embed/'+e.target.getAttribute('videoId'));
+}
+
+
+showChannelVideos = (e)=>{
+
+    this.setState({showModal:true});
+    let channelIndex = e.target.getAttribute('channelIndex');
+    let channels = document.getElementsByClassName('channelVideosInManage');
+
+    if(document.getElementById('channel'+channelIndex+'VideosInManage').style.display==='grid'){
+        document.getElementById('channel'+channelIndex+'VideosInManage').style.display='none'; 
     }
-
-
-    playVideo =(e)=>{
-        window.open('https://www.youtube.com/embed/'+e.target.getAttribute('videoId'));
-    }
-
-
-    showChannelVideos = (e)=>{
-
-        this.setState({showModal:true});
-        let channelIndex = e.target.getAttribute('channelIndex');
-        let channels = document.getElementsByClassName('channelVideosInManage');
-
-        if(document.getElementById('channel'+channelIndex+'VideosInManage').style.display==='grid'){
-            document.getElementById('channel'+channelIndex+'VideosInManage').style.display='none'; 
-
+    else{
+        for (let i=0; i<channels.length;i++){
+            document.getElementById('channel'+i+'VideosInManage').style.display='none';
         }
-        else{
+        document.getElementById('channel'+channelIndex+'VideosInManage').style.display='grid';   
+    } 
+}
 
-            for (let i=0; i<channels.length;i++){
-                document.getElementById('channel'+i+'VideosInManage').style.display='none';
+showDeleteButton = (e)=>{
+    let deleteButtonIndex = e.target.getAttribute('channelIndex');
+    document.getElementById('deleteButton'+deleteButtonIndex).style.display='block'
+}
 
-            }
-            
-            document.getElementById('channel'+channelIndex+'VideosInManage').style.display='grid';
-           
-            
-        } 
-
+hideDeleteButton = (e)=>{
+    let deleteButton = document.getElementsByClassName('deleteButton');
+    for(let i=0;i<deleteButton.length;i++){
+        document.getElementsByClassName('deleteButton')[i].style.display='none';
     }
-
-    showDeleteButton = (e)=>{
-
-        
-
-        let deleteButtonIndex = e.target.getAttribute('channelIndex');
-
-        document.getElementById('deleteButton'+deleteButtonIndex).style.display='block';
-
-    }
-
-    hideDeleteButton = (e)=>{
-        
-        let deleteButton = document.getElementsByClassName('deleteButton');
-
-        for(let i=0;i<deleteButton.length;i++){
-            document.getElementsByClassName('deleteButton')[i].style.display='none';
-        }
-    }
+}
 
     deleteChannel = (e)=>{
         e.stopPropagation();
@@ -138,10 +119,8 @@ class manageVideos extends Component {
          })
          .then(response=>response.json())
          .then(async(resultData)=>{
-
             if(resultData['status']==='success'){
-                alert(resultData['description']);
-
+                //alert(resultData['description']);
                 var delData = this.state.channels;
 
                 delData.map((channel, index)=>{
@@ -149,13 +128,10 @@ class manageVideos extends Component {
                         delete delData[index];
                     }
                 })
-
                 await this.setState({channels:delData});
             }
             else{
-
                 alert(resultData['description']);
-
             }
 
          })
@@ -189,52 +165,44 @@ class manageVideos extends Component {
 
     render() { 
         return ( <div>
-            <div><h2>Your Channel List</h2></div>
+            <div>
+                <h2>Your Channel List</h2>
+            </div>
             {(this.state.channels === false)?(<div>Loading...!</div>):(
             <div>
                 {this.state.channels.map((channels, index)=>{
                     return (
-                        <div className='channelContentInManage'>
-
+                            <div className='channelContentInManage'>
                                 <div className='channelNamesInManage' id={'channelNamesInManage'+index} channelIndex={index} onMouseEnter={(e)=>{this.showDeleteButton(e)}} onMouseLeave={(e)=>{this.hideDeleteButton(e)}} onClick ={(e)=>{this.showChannelVideos(e)}}>
                                     {channels.channelName}                         
-            
-                                    <button style ={{display:'none'}}className='deleteButton' id={'deleteButton'+index} channelId ={channels.channelId} channelName={channels.channelName}  onClick={(e)=>{this.deleteChannel(e)}}>Delete Channel</button>
-                                    
+                                    <button style ={{display:'none'}}className='deleteButton' id={'deleteButton'+index} channelId ={channels.channelId} channelName={channels.channelName}  onClick={(e)=>{this.deleteChannel(e)}}>Delete Channel</button>  
                                 </div>
 
-
-        
-        
-                                  <div className="channelVideosInManage" id= {'channel'+index+'VideosInManage'}>
+                                <div className="channelVideosInManage" id= {'channel'+index+'VideosInManage'}>
                                     {channels['videoIds'].map((videoId, videoIndex)=>{
                                         return(
-                                            <div className="videoDivInManage">
-                                            <div className='videoInManage'  videoId={videoId}  >
-                                                {channels['videoTitles'][videoIndex]}
-                                                <img src= {channels['videoThumbnails'][videoIndex]} width='40%' />
-                                            </div>
-                                            <div className='videoButtonsDiv' id={"videoButtonsDiv"+videoId}>
-                                                {/* <button className="videoButton" videoId = {videoId} channelId={channels['channelId']} videoTitle={channels['videoTitles'][videoIndex]} videoThumbnail={channels['videoThumbnails'][videoIndex]} onClick={(e)=>{this.playVideo(e)}}>Play</button> */}
-                                                <button className="videoButton" videoId = {videoId} channelId={channels['channelId']} videoTitle={channels['videoTitles'][videoIndex]} videoThumbnail={channels['videoThumbnails'][videoIndex]} onClick={(e)=>{this.deleteVideo(e)}}>Delete</button>
-                                            </div>
-                                            </div>
-                                        );
-                                    })}
+                                                <div className="videoDivInManage">
+                                                    <div className='videoInManage'  videoId={videoId}  >
+                                                        {channels['videoTitles'][videoIndex]}
+                                                        <img src= {channels['videoThumbnails'][videoIndex]} width='40%' />
+                                                    </div>
+                                                    <div className='videoButtonsDiv' id={"videoButtonsDiv"+videoId}>
+                                                        {/* <button className="videoButton" videoId = {videoId} channelId={channels['channelId']} videoTitle={channels['videoTitles'][videoIndex]} videoThumbnail={channels['videoThumbnails'][videoIndex]} onClick={(e)=>{this.playVideo(e)}}>Play</button> */}
+                                                        <button className="videoButton" videoId = {videoId} channelId={channels['channelId']} videoTitle={channels['videoTitles'][videoIndex]} videoThumbnail={channels['videoThumbnails'][videoIndex]} onClick={(e)=>{this.deleteVideo(e)}}>Delete</button>
+                                                    </div>
+                                                </div>
+                                                );
+                                        })
+                                    }
                                 </div>  
-                        </div>    
-                    );
-                })}
-
-            </div>)}
-
-
-          <div>
-
-          
-          </div>
-
-        </div> );
+                            </div>    
+                        );
+                    })
+                }
+            </div>
+            )}
+        </div>
+        );
     }
 }
  

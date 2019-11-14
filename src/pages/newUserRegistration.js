@@ -148,10 +148,6 @@ class newUser  extends Component {
     
     }
 
-    
-        
-    
-    
     render() { 
         return ( <div className="login_container col-lg-4">
                     <Header/>
@@ -209,7 +205,6 @@ class newUser  extends Component {
                             headerTitle='Thanks For Registration'
                             />
       
-
                         </div>
                     </div>
 

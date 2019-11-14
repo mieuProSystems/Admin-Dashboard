@@ -12,7 +12,6 @@ class accountinfo  extends Component {
 
 
     componentDidMount(){
-        //console.log("Hai---------------------");
 
         fetch(IPADDRESS +'/home/myProfile/getDetails',{ 
 
@@ -63,7 +62,6 @@ class accountinfo  extends Component {
 
     setFormValues = (event)=>{
         this.setState({[event.target.name]:event.target.value});
-
     }
 
 
@@ -77,11 +75,13 @@ class accountinfo  extends Component {
                 
                 'Content-Type': 'application/json',    
             },
-            body:JSON.stringify({userMail:this.state.userMail, oldPassword:this.state.oldPassword}) 
+            body:JSON.stringify({userMail:this.state.userMail,
+                                oldPassword:this.state.oldPassword
+                            }) 
         })
         .then(response => response.json())
         .then((resultData)=>{
-            console.log(resultData);
+            //console.log(resultData);
             document.getElementById('verificationInfo').innerHTML=resultData['description'];
 
             if (resultData['status'] ==='success'){
@@ -94,7 +94,6 @@ class accountinfo  extends Component {
             else{
                 document.getElementById('verificationInfo').style.color="red";
                 document.getElementById('verifyButton').disabled=false;
-
             }
         })
     }
@@ -111,27 +110,23 @@ class accountinfo  extends Component {
                 
                 'Content-Type': 'application/json',    
             },
-            body:JSON.stringify({changePasswordToken:this.state.token, newPassword:this.state.newPassword}) 
+            body:JSON.stringify({changePasswordToken:this.state.token,
+                                newPassword:this.state.newPassword
+                                }) 
         })
         .then(response => response.json())
         .then((resultData)=>{
-            console.log(resultData);
+            //console.log(resultData);
              
              if (resultData['status'] ==='success'){
                 this.setState({showModal:true});
                  document.getElementById("modalWindow").innerHTML=resultData['description'];
-                 document.getElementById("modalWindow").style.color='green';
-                
-                 
+                 document.getElementById("modalWindow").style.color='green';    
              }
              else{
                 //this.setState({showModal:true});
-             
                 document.getElementById("newPasswordErrorInfo").innerHTML=resultData['description'];
                 document.getElementById("newPasswordErrorInfo").style.color='red';
-                 
-                
-
              }
         })
     }
@@ -142,73 +137,79 @@ class accountinfo  extends Component {
                         <h4>Admin Details</h4>
                     </div>
                     <div id='accountInfo'>
+                        <table className="table table-striped">
+                            <thead>
+                                <tr className='d-flex'>
+                                    <th className="col-lg-3">First Name</th>
+                                    <th className="col-lg-9">{this.state.firstName}</th>
+                                </tr>
+                            </thead>
 
-                    <table className="table table-striped">
-                  <thead>
-                  <tr className='d-flex'>
-                    <th className="col-lg-3">First Name</th>
-                    <th className="col-lg-9">{this.state.firstName}</th>
-                    </tr>
-                   </thead>
-                   <thead>
-                  <tr className='d-flex'>
-                    <th className="col-lg-3">Last Name</th>
-                    <th className="col-lg-9">{this.state.lastName}</th>
-                    </tr>
-                   </thead>
-                   <thead>
-                  <tr className='d-flex'>
-                    <th className="col-lg-3">Gender</th>
-                    <th className="col-lg-9">{this.state.gender}</th>
-                    </tr>
-                   </thead>
+                            <thead>
+                                <tr className='d-flex'>
+                                    <th className="col-lg-3">Last Name</th>
+                                    <th className="col-lg-9">{this.state.lastName}</th>
+                                </tr>
+                            </thead>
 
-                   <thead>
-                  <tr className='d-flex'>
-                    <th className="col-lg-3">Mail Id</th>
-                    <th className="col-lg-9">{this.state.userMail}</th>
-                    </tr>
-                   </thead>
-                   <thead>
-                  <tr className='d-flex'>
-                    <th className="col-lg-3">Mobile No</th>
-                    <th className="col-lg-9">{this.state.mobileNo}</th>
-                    </tr>
-                   </thead>  
+                            <thead>
+                                <tr className='d-flex'>
+                                    <th className="col-lg-3">Gender</th>
+                                    <th className="col-lg-9">{this.state.gender}</th>
+                                </tr>
+                            </thead>
+
+                            <thead>
+                                <tr className='d-flex'>
+                                    <th className="col-lg-3">Mail Id</th>
+                                    <th className="col-lg-9">{this.state.userMail}</th>
+                                </tr>
+                            </thead>
+
+                            <thead>
+                                <tr className='d-flex'>
+                                    <th className="col-lg-3">Mobile No</th>
+                                    <th className="col-lg-9">{this.state.mobileNo}</th>
+                                </tr>
+                            </thead>  
                 
-                   <thead>
-                   <tr className='d-flex'>
-                    <th className="col-lg-3">Password</th>
-                    <th className="col-lg-9">***************<Button id="changePassword" onClick={this.openForm}>Change Password</Button></th>
-                    
-                    </tr>
-                   </thead>               
-            </table>
-
-            <div style={{display:'none'}} id="changePasswordForm">
-                <center><h5 style={{backgroundColor:'#2c3e50', color:'white'}}>Change Password</h5></center>
-
-            <form onSubmit={this.handleCredentials}>
-            <Label>Old Password: </Label>
-            <Input type="text" name='oldPassword' value={this.state.user_mail} placeholder="Enter Old Password" onChange={this.setFormValues} required/>
-            <br/>
-            <div id = 'verificationInfo'></div>
-
-            <center><Button type="submit" className="btn btn-block" id="verifyButton">Verify</Button></center>
-            </form>
-
-            <div id="newPasswordFormDiv" style={{display:'none'}}>
-            <form onSubmit={this.handleNewPasswordCredentials}>
-            <Label>Enter New Password: </Label>
-            <Input type="password" name='newPassword' value={this.state.newPassword} pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" placeholder="Enter New Password" onChange={this.setFormValues} required/>
-            <br/>
-            <div id="newPasswordErrorInfo"></div>
-            <center><Button type="submit" className="btn btn-block" id="changePasswordButton">Change Password</Button></center>
-            </form>
-            </div>
+                            <thead>
+                                <tr className='d-flex'>
+                                    <th className="col-lg-3">Password</th>
+                                    <th className="col-lg-9">***************<Button id="changePassword" onClick={this.openForm}>Change Password</Button></th>
+                                </tr>
+                            </thead>               
             
-            </div>
+                        </table>
 
+                    <div style={{display:'none'}} id="changePasswordForm">
+                        <center>
+                            <h5 style={{backgroundColor:'#2c3e50', color:'white'}}>Change Password</h5>
+                        </center>
+
+                        <form onSubmit={this.handleCredentials}>
+                            <Label>Old Password: </Label>
+                            <Input type="text" name='oldPassword' value={this.state.user_mail} placeholder="Enter Old Password" onChange={this.setFormValues} required/>
+                            <br/>
+                            <div id = 'verificationInfo'></div>
+
+                            <center>
+                                <Button type="submit" className="btn btn-block" id="verifyButton">Verify</Button>
+                            </center>
+                        </form>
+
+                        <div id="newPasswordFormDiv" style={{display:'none'}}>
+                            <form onSubmit={this.handleNewPasswordCredentials}>
+                                <Label>Enter New Password: </Label>
+                                <Input type="password" name='newPassword' value={this.state.newPassword} pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" placeholder="Enter New Password" onChange={this.setFormValues} required/>
+                                <br/>
+                                <div id="newPasswordErrorInfo"></div>
+                                <center>
+                                    <Button type="submit" className="btn btn-block" id="changePasswordButton">Change Password</Button>
+                                </center>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
                 <ResponseModal
@@ -216,11 +217,9 @@ class accountinfo  extends Component {
                     onHide={() => {this.setState({showModal:false});
                                     window.location.reload();}}
                     headerTitle={ [ <div id='modalTitle'> Change Password  </div>]}
-                    description={[<div id="modalWindow"></div>]}
-                    
+                    description={[<div id="modalWindow"></div>]}    
                 />
-
-                </div>
+            </div>
                 );
             }
         }

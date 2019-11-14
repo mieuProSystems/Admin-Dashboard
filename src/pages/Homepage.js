@@ -61,7 +61,6 @@ class homepage  extends Component {
                         videoDiv.onclick=(e)=>{
                             //window.open('https://www.youtube.com/watch?v='+channelVideosList);
                             window.open('https://www.youtube.com/embed/'+channelVideosList);
-                        
                         }
                         
 
@@ -96,9 +95,9 @@ class homepage  extends Component {
         fetch(IPADDRESS+'/home/admin/getFeedback')
         .then(response=>response.json())
         .then(async(resultData)=>{
-            console.log(resultData);
+            //console.log(resultData);
             var notificationCount =0
-           await resultData.map((data)=>{
+            await resultData.map((data)=>{
                 if(data.read === false){
                     notificationCount ++;
                 }
@@ -113,8 +112,7 @@ class homepage  extends Component {
     constructor(props) {
         super(props);
         this.state={
-                    currentTime:'',
-                    currentDate:'',
+                    
                     query:'',
                     resultChannelData:'',
                     addedChannelId:'',
@@ -135,17 +133,7 @@ class homepage  extends Component {
                     }
                     
                 }
-                
-    //Fetching Current Date and Time
-    // componentWillMount(){
-    //     setInterval(function(){
-    //         this.setState({
-    //             currentTime: new Date().toLocaleTimeString("en-IN", {timeZone: "Asia/kolkata"}),
-    //             currentDate: new Date().toLocaleDateString("en-IN", {timeZone: "Asia/kolkata"})
-            
-    //         })
-    //     }.bind(this), 1000);
-    // }
+        
 
     //Redirect to home page while direct access URL
     redirectToLogin =async()=>{
@@ -312,7 +300,14 @@ class homepage  extends Component {
                 
                 'Content-Type': 'application/json',    
             },
-            body:JSON.stringify({channelName:this.state.channelName,channelId:this.state.addedChannelId, videoThumbnails:this.state.videoThumbnails, videoIds:this.state.videoIds, videoTitles:this.state.videoTitles, currentTime:this.state.currentTime, currentDate:this.state.currentDate}) 
+            body:JSON.stringify({channelName:this.state.channelName,
+                                channelId:this.state.addedChannelId, 
+                                videoThumbnails:this.state.videoThumbnails, 
+                                videoIds:this.state.videoIds, 
+                                videoTitles:this.state.videoTitles, 
+                                currentTime:this.state.currentTime, 
+                                currentDate:this.state.currentDate
+                            }) 
             
         })
         .then(response => response.json())
@@ -334,10 +329,12 @@ class homepage  extends Component {
         }
         }
 
-
-
     selectAll = async()=>{
-        await this.setState({videoIds:[], videoTitles:[], videoThumbnails:[], selectAllBoxChecked:!this.state.selectAllBoxChecked});
+        await this.setState({videoIds:[],
+                            videoTitles:[], 
+                            videoThumbnails:[], 
+                            selectAllBoxChecked:!this.state.selectAllBoxChecked
+                        });
         
         
         let allDiv = document.getElementsByClassName('selectVideos');
@@ -412,31 +409,29 @@ class homepage  extends Component {
                 alert(error);
             })
 
-        }
-
-            
-        
+        }    
     }
   
 
     openSideMenu = ()=>{
         document.getElementById("menu").style.width = "250px";
-  document.getElementById("videoPanel").style.marginLeft = "250px";
+        document.getElementById("videoPanel").style.marginLeft = "250px";
 
-  console.log(document.getElementById("searchPanel").style.width);
-   if(document.getElementById("searchPanel").style.width==='200px'){
-     {this.closeSearchPanel()}
- }
- // document.getElementById("videoPanel").style.backgroundColor = "rgba(0,0,0,0.4)";
+        //console.log(document.getElementById("searchPanel").style.width);
+        if(document.getElementById("searchPanel").style.width==='200px'){
+            {this.closeSearchPanel()}
+        }
+        // document.getElementById("videoPanel").style.backgroundColor = "rgba(0,0,0,0.4)";
     }
 
     closeSideMenu = ()=>{
     document.getElementById("menu").style.width = "0px";
-  document.getElementById("videoPanel").style.marginLeft = "0px";
- // document.getElementById("videoPanel").style.backgroundColor = "white";
+    document.getElementById("videoPanel").style.marginLeft = "0px";
+    // document.getElementById("videoPanel").style.backgroundColor = "white";
     }
 
     reduceNotificationCount = async(index, replyMessage)=>{
+        
         if(this.state.notificationCount>0){
         await this.setState({notificationCount:this.state.notificationCount - Number(1)});
         }
@@ -447,14 +442,11 @@ class homepage  extends Component {
         notification[index].repliedMessage= replyMessage;
 
         await this.setState({notifications:notification});
-        console.log(this.state.notifications[index]);
-
-
-
+        //console.log(this.state.notifications[index]);
     }
 
     openSearchPanel=()=>{
-        console.log("clicked");
+        //console.log("clicked");
         document.getElementById('searchPanel').style.width='200px'; 
         document.getElementById('searchForm').style.visibility='visible';  
         document.getElementById('videoPanel').style.width='80%'; 
@@ -494,12 +486,6 @@ class homepage  extends Component {
                     
                     </div>
 
-{/* 
-                    <div className='dateAndTime'>
-                        <span>Date: {this.state.currentDate} (MM/DD/YYYY)</span><br/>
-                        <span>Time: {this.state.currentTime} </span>
-                    </div> */}
-
                 </div> 
 
                 
@@ -518,8 +504,8 @@ class homepage  extends Component {
                     </div>
                 
                 <div id='home' className='tabcontent'>
-                    {/* <center><h2>Welcome!</h2></center> */}
-                    </div> 
+                    
+                </div> 
 
                 <div id="accountInfo"  style={{display:'none'}} className="tabcontent">
                 <AccountInfo token={this.props.location.state.response.token}/>
@@ -574,20 +560,12 @@ class homepage  extends Component {
                     description={[<div id="modalWindow"><div>  Do you want to exit from this panel? </div></div>]}/>
                 
                 </div>
-
-                
-      
-
-
-            
                 </div> 
 
                 <div className='searchPanel' id='searchPanel' style={{ marginTop:'20px', width:'0px'}}>
                  <form className='searchForm' id='searchForm' onSubmit={this.getYoutubeChannelList}>
                      <div><div className="closebtn" style={{marginBottom:'20px',color:'#fff'}} onClick={()=>{this.closeSearchPanel()}}>&times;</div></div>
                  
-                    
-                    {/* <h4 style={{color:'white'}}>What are you looking for...?</h4> */}
                     <div style={{marginTop:'50px', padding:'10px'}}>
                     <input type='text' name='query' placeholder='Enter Channel Name' onChange={this.handleQueryValueChange} value={this.state.query} required/>
                     

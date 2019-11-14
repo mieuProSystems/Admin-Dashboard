@@ -20,9 +20,7 @@ class logHistory  extends Component {
         )
     }
 
-    converTime = (DateAndTime) => {
-
-    
+    convertTime = (DateAndTime) => {
         let Date = (DateAndTime.split(','))[0]
         let time = (DateAndTime.split(','))[1]
         let hour = (time.split(':'))[0]
@@ -36,51 +34,43 @@ class logHistory  extends Component {
         hour = (hour+'').length === 1 ? `0${hour}` : hour;
       
         // return (`${hour}:${min}:${sec} ${part}`)
-        return (`${Date} ${hour}:${min} ${part}`)
-        
-        
+        return (`${Date} ${hour}:${min} ${part}`)  
       }
 
 
     render() { 
-        return ( <div>logHistory
+        return ( <div>
+                    {(this.state.logHistory===false)?(<div>Loading...!</div>):(<div>
 
-            {(this.state.logHistory===false)?(<div>Loading...!</div>):(<div>
-
-                <table className="table table-striped">
-                     <thead>
-                        <tr className='d-flex'>
-                        <th className='col-lg-4'>Name</th>
-                        <th className='col-lg-4'>Mail Id</th>
-                        <th className='col-lg-2'>Logged In</th>
-                        <th className='col-lg-2'>Logged Out</th>
-                    </tr>
-                    </thead>
-                    
-
-
-                {(this.state.logHistory.map((data, index)=>{
-                    return(
+                    <table className="table table-striped">
                         <thead>
                             <tr className='d-flex'>
-                                <td className='col-lg-4'>{data.firstName}</td>
-                                <td className='col-lg-4'>{data.userMail}</td>
-                                <td className='col-lg-2'>{this.converTime(data.loginTime)}</td>
-                                <td className='col-lg-2'> {(data.logoutTime === undefined)?('null'):(this.converTime(data.logoutTime))} </td>
+                                <th className='col-lg-4'>Name</th>
+                                <th className='col-lg-4'>Mail Id</th>
+                                <th className='col-lg-2'>Logged In</th>
+                                <th className='col-lg-2'>Logged Out</th>
                             </tr>
-                            </thead>
-                           
+                        </thead>
 
-                        
-                    );
+                        {(this.state.logHistory.map((data, index)=>{
+                        return(
+                            <thead>
+                                <tr className='d-flex'>
+                                    <td className='col-lg-4'>{data.firstName}</td>
+                                    <td className='col-lg-4'>{data.userMail}</td>
+                                    <td className='col-lg-2'>{this.convertTime(data.loginTime)}</td>
+                                    <td className='col-lg-2'> {(data.logoutTime === undefined)?('null'):(this.convertTime(data.logoutTime))} </td>
+                                </tr>
+                            </thead>    
+                            );
+                        })
+                        )}
+                    </table>
 
-                }))}
-
-            </table>
-
-            </div>)}
-
-        </div> );
+                </div>
+                )}
+        </div>
+         );
     }
 }
  

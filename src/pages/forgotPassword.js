@@ -19,8 +19,6 @@ class forgetPassword  extends Component {
     //Set value of the state variable
     handleChange=(event)=>{
         this.setState({[event.target.name]:event.target.value});
-        //console.log("userMailEntered");
-        //console.log(IPADDRESS);   
     }
 
     // Send request to the server and displays the response
